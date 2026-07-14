@@ -39,8 +39,20 @@ No backend yet. To attach a provider, pass an `endpoint` to `<WaitlistForm />`
 (or set `data-endpoint`); it POSTs `{ email }` form-encoded. See the component
 header and `docs/LANDING_RATIONALE.md`.
 
-## Deploy
+## Deploy (Cloudflare Pages)
 
-`npm run build` → deploy `dist/` as static files. Set the domain to `pole2.it`
-and add a `robots.txt`. Before launch: subset the fonts to `woff2` and generate a
-raster OG image (see rationale).
+Static output → any host. On **Cloudflare Pages**:
+
+1. Dashboard → **Workers & Pages → Create → Pages → Connect to Git**, authorize
+   GitHub, pick `lcarzaniga/pole2-landing`.
+2. Build settings — Framework preset **Astro**, Build command `npm run build`,
+   Output directory `dist`. (Node 20 is pinned via `.node-version`.)
+3. **Save and Deploy** → a `*.pages.dev` URL builds in ~1 min. Every push to
+   `master` redeploys.
+4. Custom domain: project → **Custom domains → Set up a domain** → `pole2.it`
+   (and `www`). Requires `pole2.it` to be on Cloudflare DNS (add the site and
+   point the registrar's nameservers at Cloudflare).
+
+`robots.txt`, `_headers` (immutable caching + security headers), and the sitemap
+are already in the build. **Before launch:** subset the fonts to `woff2` and
+generate a raster OG image (see `docs/LANDING_RATIONALE.md`).
