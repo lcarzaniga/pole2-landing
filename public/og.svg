@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="Pole² — Custodisci ciò che conta">
+  <rect width="1200" height="630" fill="#2e6b5e"/>
+  <rect width="1200" height="630" fill="url(#g)"/>
+  <defs>
+    <radialGradient id="g" cx="30%" cy="28%" r="80%">
+      <stop offset="0%" stop-color="#3a7c6d" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#1f4c42" stop-opacity="0.7"/>
+    </radialGradient>
+  </defs>
+  <text x="100" y="300" font-family="'Work Sans','Inter',Arial,sans-serif" font-weight="600" font-size="150" letter-spacing="-4" fill="#f6f1e7">Pole<tspan font-size="95" dy="-52">2</tspan></text>
+  <text x="104" y="380" font-family="'Inter',Arial,sans-serif" font-size="40" fill="#f6f1e7" opacity="0.92">Custodisci ciò che conta.</text>
+  <text x="104" y="432" font-family="'Inter',Arial,sans-serif" font-size="40" fill="#f6f1e7" opacity="0.92">Conta ciò che custodisci.</text>
+  <text x="104" y="520" font-family="'Inter',Arial,sans-serif" font-size="26" fill="#f6f1e7" opacity="0.66">Una casa serena per le cose a cui tieni.</text>
+</svg>

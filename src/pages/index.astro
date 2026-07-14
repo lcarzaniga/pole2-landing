@@ -1,0 +1,363 @@
+---
+import Base from '../layouts/Base.astro';
+import Wordmark from '../components/Wordmark.astro';
+import TurtleShell from '../components/TurtleShell.astro';
+import HexTexture from '../components/HexTexture.astro';
+import WaitlistForm from '../components/WaitlistForm.astro';
+
+const lostThings = [
+  'le ricevute',
+  'i manuali',
+  'le garanzie',
+  'le memorie d’acquisto',
+  'la storia della manutenzione',
+];
+
+const steps = [
+  {
+    n: '01',
+    title: 'Conserva',
+    body: 'Affidi una cosa a cui tieni a Pole². In pochi secondi è al sicuro.',
+  },
+  {
+    n: '02',
+    title: 'Respira',
+    body: 'Non devi più tenere tutto a mente. Ci pensa lui, con calma.',
+  },
+  {
+    n: '03',
+    title: 'Ritrova',
+    body: 'Quando ti servirà, sarà lì: completo e al suo posto.',
+  },
+];
+
+const privacy = [
+  'Tutto resta sul tuo dispositivo.',
+  'Nessuna pubblicità.',
+  'Nessun tracciamento.',
+  'Nessun cloud obbligatorio.',
+  'Se un giorno vorrai condividere qualcosa, deciderai tu — sempre.',
+];
+---
+
+<Base>
+  <!-- ============================= HERO ============================= -->
+  <header class="hero">
+    <HexTexture color="#f6f1e7" opacity={0.05} cell={58} />
+    <div class="wrap hero__grid">
+      <div class="hero__text">
+        <Wordmark as="h1" size="clamp(3.2rem, 2rem + 9vw, 6rem)" class="hero__mark" />
+        <p class="hero__tagline">
+          Custodisci ciò che conta.<br />Conta ciò che custodisci.
+        </p>
+        <p class="hero__sentence">
+          Una casa serena per le cose a cui tieni — e per tutto ciò che vorrai
+          ritrovare domani.
+        </p>
+        <div class="hero__cta">
+          <a class="btn btn--onPetrol" href="#lista">Avvisami quando sarà disponibile</a>
+          <p class="hero__reassure">Resta tutto sul tuo dispositivo.</p>
+        </div>
+      </div>
+      <div class="hero__turtle">
+        <TurtleShell size="min(72vw, 320px)" />
+      </div>
+    </div>
+  </header>
+
+  <main id="contenuto">
+    <!-- ======================= WHY POLE² EXISTS ======================= -->
+    <section class="section" aria-labelledby="why-h">
+      <div class="wrap read reveal">
+        <p class="eyebrow">Perché esiste</p>
+        <h2 id="why-h">Non perdiamo le cose. Perdiamo la loro storia.</h2>
+        <p class="lead">
+          Un oggetto è lì, sullo scaffale. Quello che sparisce è il resto —
+          quello che ti serve proprio quando ti serve.
+        </p>
+        <ul class="losts" aria-label="Ciò che di solito si perde">
+          {lostThings.map((t) => <li class="losts__item">{t}</li>)}
+        </ul>
+        <p>
+          Pole² tiene tutto questo insieme, accanto alla cosa a cui appartiene.
+          Così non devi cercarlo: è già dove ti aspetti.
+        </p>
+      </div>
+    </section>
+
+    <!-- ========================= HOW IT FEELS ========================= -->
+    <section class="section section--alt" aria-labelledby="how-h">
+      <div class="wrap">
+        <div class="read reveal">
+          <p class="eyebrow">Come ci si sente</p>
+          <h2 id="how-h">Tre gesti tranquilli.</h2>
+        </div>
+        <ol class="steps" role="list">
+          {
+            steps.map((s) => (
+              <li class="steps__item reveal">
+                <span class="steps__n" aria-hidden="true">{s.n}</span>
+                <h3>{s.title}</h3>
+                <p>{s.body}</p>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+    </section>
+
+    <!-- ============================ PRIVACY ============================ -->
+    <section class="section privacy" aria-labelledby="privacy-h">
+      <HexTexture color="#f6f1e7" opacity={0.045} cell={58} />
+      <div class="wrap read reveal privacy__inner">
+        <p class="eyebrow eyebrow--onPetrol">Privacy</p>
+        <h2 id="privacy-h">Le tue cose restano tue.</h2>
+        <ul class="privacy__list">
+          {privacy.map((p) => <li>{p}</li>)}
+        </ul>
+        <p class="privacy__closing">
+          Pole² protegge i tuoi interessi, non le sue metriche.
+        </p>
+      </div>
+    </section>
+
+    <!-- ========================= BRAND STORY ========================= -->
+    <section class="section" aria-labelledby="name-h">
+      <div class="wrap read reveal">
+        <p class="eyebrow">Il nome</p>
+        <h2 id="name-h">Pole pole.</h2>
+        <p class="lead">
+          In swahili <em>«pole pole»</em> vuol dire piano piano: con calma, senza
+          fretta.
+        </p>
+        <p>
+          L’abbiamo sentito dire a Zanzibar, ed è diventato il modo in cui
+          volevamo ci si sentisse usando quest’app. Il piccolo
+          <Wordmark size="1.05em" /> è un gioco:
+          <strong>Pole²</strong> = pole pole. Non serve capirlo subito — è lì, se
+          un giorno vorrai scoprirlo.
+        </p>
+      </div>
+    </section>
+
+    <!-- ========================= WAITING LIST ========================= -->
+    <section class="section section--alt" id="lista" aria-labelledby="wl-h">
+      <div class="wrap read reveal">
+        <p class="eyebrow">Lista d’attesa</p>
+        <h2 id="wl-h">Ti avvisiamo quando sarà pronto.</h2>
+        <p class="lead">
+          Nessuna fretta. Lascia la tua email: ti scriveremo una volta soltanto,
+          quando Pole² sarà disponibile.
+        </p>
+        <WaitlistForm />
+      </div>
+    </section>
+  </main>
+
+  <!-- ============================= FOOTER ============================= -->
+  <footer class="footer">
+    <div class="wrap footer__inner">
+      <Wordmark size="1.4rem" />
+      <p class="footer__line">Tutto resta sul tuo dispositivo.</p>
+      <p class="footer__fine">© 2026 Pole²</p>
+    </div>
+  </footer>
+</Base>
+
+<style>
+  /* -------------------------------- HERO -------------------------------- */
+  .hero {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background:
+      radial-gradient(120% 90% at 20% 10%, #3a7c6d 0%, var(--petrol) 45%, var(--petrol-deep) 100%);
+    color: var(--on-petrol);
+    /* Fill the first screen, but never balloon on very tall monitors. */
+    min-height: min(92svh, 920px);
+    display: flex;
+    align-items: center;
+    padding-block: 4rem;
+  }
+  .hero__grid {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: center;
+  }
+  @media (min-width: 56rem) {
+    .hero__grid {
+      grid-template-columns: 1.15fr 0.85fr;
+    }
+  }
+  .hero__mark {
+    color: var(--on-petrol);
+    margin: 0 0 1.25rem;
+  }
+  .hero__tagline {
+    font-size: clamp(1.35rem, 1.1rem + 1.2vw, 1.9rem);
+    line-height: 1.25;
+    font-weight: 500;
+    margin: 0 0 1.25rem;
+    color: var(--on-petrol);
+    text-wrap: balance;
+  }
+  .hero__sentence {
+    font-size: clamp(1.05rem, 1rem + 0.5vw, 1.3rem);
+    color: var(--on-petrol-muted);
+    max-width: 34rem;
+    margin: 0 0 2rem;
+  }
+  .hero__cta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: flex-start;
+  }
+  .hero__reassure {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--on-petrol-muted);
+  }
+  .hero__turtle {
+    display: flex;
+    justify-content: center;
+  }
+
+  /* ------------------------------ WHY / lost ------------------------------ */
+  .losts {
+    list-style: none;
+    padding: 0;
+    margin: 1.5rem 0 1.75rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+  .losts__item {
+    background: var(--shell-tint);
+    color: var(--petrol);
+    border-radius: 999px;
+    padding: 0.5rem 1rem;
+    font-size: 0.98rem;
+    font-weight: 500;
+  }
+  @media (prefers-color-scheme: dark) {
+    .losts__item {
+      background: var(--surface-alt);
+      color: #7fd6be;
+    }
+  }
+
+  /* ------------------------------- STEPS -------------------------------- */
+  .steps {
+    list-style: none;
+    padding: 0;
+    margin: 2.5rem 0 0;
+    display: grid;
+    gap: 1.25rem;
+  }
+  @media (min-width: 48rem) {
+    .steps {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+  }
+  .steps__item {
+    background: var(--surface);
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-lg);
+    padding: 1.75rem;
+  }
+  .steps__n {
+    font-family: 'Work Sans', sans-serif;
+    font-weight: 600;
+    color: var(--petrol);
+    font-size: 0.95rem;
+    letter-spacing: 0.05em;
+  }
+  @media (prefers-color-scheme: dark) {
+    .steps__n {
+      color: #7fd6be;
+    }
+  }
+  .steps__item h3 {
+    margin: 0.5rem 0 0.4rem;
+  }
+  .steps__item p {
+    margin: 0;
+    color: var(--muted);
+  }
+
+  /* ------------------------------ PRIVACY ------------------------------- */
+  .privacy {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background:
+      radial-gradient(120% 100% at 80% 0%, #2f6e5c 0%, var(--petrol) 55%, var(--petrol-deep) 100%);
+    color: var(--on-petrol);
+  }
+  .privacy__inner {
+    position: relative;
+    z-index: 1;
+  }
+  .eyebrow--onPetrol {
+    color: var(--gold);
+  }
+  .privacy h2 {
+    color: var(--on-petrol);
+  }
+  .privacy__list {
+    list-style: none;
+    padding: 0;
+    margin: 1.5rem 0;
+    display: grid;
+    gap: 0.9rem;
+  }
+  .privacy__list li {
+    position: relative;
+    padding-left: 1.9rem;
+    font-size: 1.1rem;
+  }
+  .privacy__list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.55em;
+    width: 0.7rem;
+    height: 0.7rem;
+    background: var(--gold);
+    /* a small hexagon bullet — the brand motif, used sparingly */
+    clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%);
+  }
+  .privacy__closing {
+    margin-top: 1.75rem;
+    color: var(--on-petrol-muted);
+    font-style: italic;
+  }
+
+  /* ------------------------------- FOOTER ------------------------------- */
+  .footer {
+    border-top: 1px solid var(--hairline);
+    padding-block: 2.5rem;
+    color: var(--muted);
+  }
+  .footer__inner {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  .footer__line {
+    margin: 0;
+  }
+  .footer__fine {
+    margin: 0;
+    font-size: 0.85rem;
+    opacity: 0.8;
+  }
+
+  em {
+    font-style: italic;
+  }
+</style>

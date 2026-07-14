@@ -1,0 +1,17 @@
+---
+// The Pole² wordmark — Work Sans SemiBold, only the P capitalised, tight
+// tracking, the ² tucked close and raised. Matches lib/shared/brand/
+// pole_wordmark.dart. `size` is any CSS length; `as` sets the tag (h1 on hero).
+interface Props {
+  size?: string;
+  as?: 'span' | 'h1' | 'div';
+  color?: string;
+  class?: string;
+}
+const { size = '1.5rem', as = 'span', color, class: cls = '' } = Astro.props;
+const Tag = as;
+const style = `font-size:${size};${color ? `color:${color};` : ''}`;
+---
+<Tag class={`wordmark ${cls}`} style={style} aria-label="Pole²">
+  Pole<sup aria-hidden="true">2</sup>
+</Tag>

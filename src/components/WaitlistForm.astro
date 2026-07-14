@@ -1,0 +1,146 @@
+---
+// Waiting-list form. UI + architecture only — NO backend yet.
+//
+// To attach a provider later (Mailchimp / ConvertKit / self-hosted / Buttondown
+// …), set `endpoint` (and optionally `method`) below or via the data-* attrs.
+// The submit handler already: validates, POSTs `{ email }` as form-encoded to
+// the endpoint when present, and otherwise shows the calm confirmation locally.
+// No redesign required — only the endpoint changes.
+interface Props {
+  endpoint?: string;
+}
+const { endpoint = '' } = Astro.props;
+---
+<form class="waitlist" data-endpoint={endpoint} novalidate>
+  <label class="waitlist__label" for="wl-email">La tua email</label>
+  <div class="waitlist__row">
+    <input
+      id="wl-email"
+      class="waitlist__input"
+      type="email"
+      name="email"
+      inputmode="email"
+      autocomplete="email"
+      placeholder="tu@esempio.it"
+      required
+      aria-describedby="wl-note wl-status"
+    />
+    <button class="btn btn--primary waitlist__submit" type="submit">
+      Avvisami quando sarà disponibile
+    </button>
+  </div>
+  <p id="wl-note" class="waitlist__note">
+    Solo per avvisarti quando Pole² sarà pronto. Niente pubblicità, nessun altro
+    invio.
+  </p>
+  <p id="wl-status" class="waitlist__status" role="status" aria-live="polite"></p>
+</form>
+
+<style>
+  .waitlist {
+    margin-top: 1.5rem;
+  }
+  .waitlist__label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+  .waitlist__row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+  .waitlist__input {
+    flex: 1 1 16rem;
+    min-width: 0;
+    font: inherit;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1.5px solid var(--hairline);
+    border-radius: 999px;
+    padding: 0.9rem 1.25rem;
+    transition: border-color 0.2s ease;
+  }
+  .waitlist__input:focus {
+    border-color: var(--petrol);
+  }
+  .waitlist__input[aria-invalid='true'] {
+    border-color: #b3452f;
+  }
+  .waitlist__submit {
+    flex: 0 0 auto;
+  }
+  .waitlist__note {
+    margin-top: 0.75rem;
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+  .waitlist__status {
+    margin-top: 0.5rem;
+    font-weight: 500;
+    min-height: 1.4em;
+    color: var(--petrol);
+  }
+  @media (prefers-color-scheme: dark) {
+    .waitlist__status {
+      color: #7fd6be;
+    }
+  }
+  .waitlist.is-done .waitlist__row,
+  .waitlist.is-done .waitlist__note {
+    display: none;
+  }
+  @media (max-width: 30rem) {
+    .waitlist__submit {
+      width: 100%;
+    }
+  }
+</style>
+
+<script>
+  // Progressive enhancement: without JS the form still renders and (once an
+  // endpoint is wired) can POST natively. With JS we validate calmly and never
+  // navigate away.
+  const form = document.querySelector<HTMLFormElement>('.waitlist');
+  if (form) {
+    const input = form.querySelector<HTMLInputElement>('#wl-email')!;
+    const status = form.querySelector<HTMLParagraphElement>('#wl-status')!;
+
+    const say = (msg: string) => {
+      status.textContent = msg;
+    };
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      input.setAttribute('aria-invalid', 'false');
+
+      if (!input.value || !input.checkValidity()) {
+        input.setAttribute('aria-invalid', 'true');
+        say('Controlla l’indirizzo email, con calma.');
+        input.focus();
+        return;
+      }
+
+      const endpoint = form.dataset.endpoint;
+      if (endpoint) {
+        try {
+          say('Un momento…');
+          const res = await fetch(endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams({ email: input.value }).toString(),
+          });
+          if (!res.ok) throw new Error(String(res.status));
+        } catch {
+          say('Non è andato perso nulla. Riprova quando vuoi.');
+          return;
+        }
+      }
+
+      // Calm confirmation (also the path used while no provider is attached).
+      form.classList.add('is-done');
+      say('Ci sei. Ti avviseremo con calma, appena Pole² sarà pronto.');
+      status.focus?.();
+    });
+  }
+</script>

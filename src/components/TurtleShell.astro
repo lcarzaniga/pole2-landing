@@ -1,0 +1,106 @@
+---
+// The turtle guardian — the same motif as the app (a domed shell of regular
+// hexagons, drawn with code, no image asset). The honeycomb is generated the
+// way the Flutter painter does it: a hex grid clipped to the shell circle.
+// It breathes very slowly (scale 0.99↔1), and holds still under Reduce Motion.
+interface Props {
+  size?: string;
+  shell?: string;
+  body?: string;
+  line?: string;
+  glow?: boolean;
+  class?: string;
+}
+const {
+  size = '260px',
+  shell = '#a7ded0',
+  body = '#1f4c42',
+  line = 'rgba(31,76,66,0.42)',
+  glow = true,
+  class: cls = '',
+} = Astro.props;
+
+// --- generate the clipped honeycomb, mirroring the app painter ---
+const cx = 100;
+const cy = 100;
+const R = 66;
+const hexR = 13;
+const hStep = 1.5 * hexR;
+const vStep = Math.sqrt(3) * hexR;
+function hexPath(x: number, y: number, r: number) {
+  let d = '';
+  for (let i = 0; i < 6; i++) {
+    const a = (60 * i * Math.PI) / 180;
+    const px = (x + r * Math.cos(a)).toFixed(2);
+    const py = (y + r * Math.sin(a)).toFixed(2);
+    d += (i === 0 ? 'M' : 'L') + px + ' ' + py + ' ';
+  }
+  return d + 'Z';
+}
+let combo = '';
+for (let x = cx - R - hexR; x <= cx + R + hexR; x += hStep) {
+  const col = Math.round((x - cx) / hStep);
+  const yShift = col % 2 !== 0 ? vStep / 2 : 0;
+  for (let y = cy - R - vStep; y <= cy + R + vStep; y += vStep) {
+    combo += hexPath(x, y + yShift, hexR);
+  }
+}
+// limbs (four) + head + tail, drawn under the shell
+const legs = [45, 135, 225, 315].map((deg) => {
+  const a = (deg * Math.PI) / 180;
+  return { x: (cx + R * Math.cos(a)).toFixed(1), y: (cy + R * Math.sin(a)).toFixed(1) };
+});
+---
+<span class={`turtle ${cls}`} style={`--turtle-size:${size}`} aria-hidden="true">
+  <svg viewBox="0 0 200 200" role="img" aria-label="La tartaruga di Pole²" width="100%" height="100%">
+    <defs>
+      <clipPath id="shellClip"><circle cx={cx} cy={cy} r={R}></circle></clipPath>
+      {glow && (
+        <radialGradient id="gold" cx="38%" cy="32%" r="55%">
+          <stop offset="0%" stop-color="#e0a83d" stop-opacity="0.30"></stop>
+          <stop offset="100%" stop-color="#e0a83d" stop-opacity="0"></stop>
+        </radialGradient>
+      )}
+    </defs>
+
+    <!-- limbs / head / tail -->
+    {legs.map((l) => <circle cx={l.x} cy={l.y} r={R * 0.22} fill={body}></circle>)}
+    <circle cx={cx} cy={cy - (R + R * 0.16)} r={R * 0.26} fill={body}></circle>
+    <path
+      d={`M ${cx - R * 0.12} ${cy + R} L ${cx + R * 0.12} ${cy + R} L ${cx} ${cy + R + R * 0.24} Z`}
+      fill={body}></path>
+
+    <!-- shell -->
+    <circle cx={cx} cy={cy} r={R} fill={shell}></circle>
+    <g clip-path="url(#shellClip)">
+      <path d={combo} fill="none" stroke={line} stroke-width="1.6"></path>
+      {glow && <circle cx={cx} cy={cy} r={R} fill="url(#gold)"></circle>}
+    </g>
+    <circle cx={cx} cy={cy} r={R} fill="none" stroke={body} stroke-width="3.4"></circle>
+  </svg>
+</span>
+
+<style>
+  .turtle {
+    display: block;
+    width: var(--turtle-size);
+    height: var(--turtle-size);
+    max-width: 100%;
+    animation: breathe 7s ease-in-out infinite;
+    transform-origin: center;
+  }
+  @keyframes breathe {
+    0%,
+    100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(0.988);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .turtle {
+      animation: none;
+    }
+  }
+</style>

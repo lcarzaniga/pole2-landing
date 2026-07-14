@@ -1,0 +1,265 @@
+/*
+  Pole² landing — design tokens mirrored 1:1 from the app.
+  Sources: docs/BRAND_BIBLE.md, docs/DESIGN_SYSTEM.md, docs/BRAND_UX_MANIFESTO.md
+  (in the Flutter project). Petrol is the identity; ivory is the wordmark; gold
+  is a rare guardian accent; red is reserved for genuine failure (unused here).
+*/
+
+/* ---- Bundled brand fonts (self-hosted, no runtime fetch — same principle as
+       the app). Variable fonts: one file carries every weight we use. ---- */
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/Inter-Variable.ttf') format('truetype');
+  font-weight: 100 900;
+  font-display: swap;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Work Sans';
+  src: url('/fonts/WorkSans-Variable.ttf') format('truetype');
+  font-weight: 100 900;
+  font-display: swap;
+  font-style: normal;
+}
+
+:root {
+  /* Brand palette (exact app tokens) */
+  --petrol: #2e6b5e;
+  --petrol-deep: #1f4c42;
+  --petrol-ink: #0f342c;
+  --ivory: #f6f1e7;
+  --gold: #e0a83d;
+  --ocean: #1c6e8c;
+  --shell-tint: #e7f1ec;
+
+  /* Light surfaces (warm, never cold grey) */
+  --surface: #f7faf8;
+  --surface-alt: #eef4f0;
+  --ink: #16201c;
+  --muted: #55635c;
+  --hairline: rgba(20, 32, 28, 0.1);
+
+  /* On petrol */
+  --on-petrol: #f6f1e7;
+  --on-petrol-muted: rgba(246, 241, 231, 0.72);
+
+  --radius: 16px;
+  --radius-lg: 24px;
+  --maxw: 68rem;
+  --readw: 40rem;
+
+  /* Motion — slow, purposeful (mirrors app duration tokens) */
+  --ease-gentle: cubic-bezier(0.2, 0, 0, 1);
+  --dur-slow: 0.7s;
+}
+
+/* Calm dark mode: surfaces go dark-warm, text goes ivory. Hero stays petrol. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --surface: #101714;
+    --surface-alt: #16221d;
+    --ink: #ecf3ef;
+    --muted: #9fb0a8;
+    --hairline: rgba(236, 243, 239, 0.12);
+    --shell-tint: #16221d;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--surface);
+  color: var(--ink);
+  font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  font-size: clamp(1.05rem, 0.98rem + 0.35vw, 1.2rem);
+  line-height: 1.6;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3 {
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+  font-weight: 600;
+  margin: 0 0 0.4em;
+}
+h2 {
+  font-size: clamp(1.6rem, 1.2rem + 1.8vw, 2.4rem);
+}
+h3 {
+  font-size: clamp(1.15rem, 1rem + 0.6vw, 1.35rem);
+}
+p {
+  margin: 0 0 1rem;
+}
+
+a {
+  color: inherit;
+}
+
+/* ---- Layout ---- */
+.wrap {
+  width: 100%;
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding-inline: clamp(1.25rem, 5vw, 3rem);
+}
+.read {
+  max-width: var(--readw);
+}
+.section {
+  padding-block: clamp(4rem, 9vw, 7.5rem);
+}
+.section--alt {
+  background: var(--surface-alt);
+}
+.eyebrow {
+  font-size: 0.82rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--petrol);
+  font-weight: 600;
+  margin: 0 0 0.9rem;
+}
+@media (prefers-color-scheme: dark) {
+  .eyebrow {
+    color: #7fd6be;
+  }
+}
+.lead {
+  font-size: clamp(1.15rem, 1rem + 0.7vw, 1.4rem);
+  color: var(--muted);
+}
+
+/* ---- Wordmark ---- */
+.wordmark {
+  font-family: 'Work Sans', 'Inter', sans-serif;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1;
+  display: inline-block;
+  white-space: nowrap;
+}
+.wordmark sup {
+  font-size: 0.62em;
+  vertical-align: baseline;
+  position: relative;
+  top: -0.44em;
+  left: -0.02em;
+  margin-right: -0.04em;
+}
+
+/* ---- Buttons ---- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font: inherit;
+  font-weight: 500;
+  border: 0;
+  border-radius: 999px;
+  padding: 0.9rem 1.5rem;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform var(--dur-slow) var(--ease-gentle),
+    background-color 0.2s ease, box-shadow 0.2s ease;
+}
+.btn--primary {
+  background: var(--petrol);
+  color: var(--on-petrol);
+}
+.btn--primary:hover {
+  background: var(--petrol-deep);
+}
+.btn--onPetrol {
+  background: var(--ivory);
+  color: var(--petrol-ink);
+}
+.btn--onPetrol:hover {
+  background: #fffdf7;
+}
+.btn--ghost {
+  background: transparent;
+  color: var(--on-petrol);
+  box-shadow: inset 0 0 0 1px rgba(246, 241, 231, 0.4);
+}
+
+/* Visible, calm focus for keyboard users everywhere. */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  background: var(--ivory);
+  color: var(--petrol-ink);
+  padding: 0.6rem 1rem;
+  border-radius: 0 0 10px 0;
+  z-index: 10;
+}
+.skip-link:focus {
+  left: 0;
+}
+
+/* ---- Scroll-reveal (progressive enhancement) ---- */
+.js .reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity var(--dur-slow) var(--ease-gentle),
+    transform var(--dur-slow) var(--ease-gentle);
+  will-change: opacity, transform;
+}
+.js .reveal.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---- Reduce Motion: honour the OS setting, like the app ---- */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  .js .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}

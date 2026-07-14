@@ -1,0 +1,56 @@
+---
+// The barely-there honeycomb — the "quiet material" of Pole², not wallpaper.
+// Generated the same way as the app's HexBackground (a sparse hex grid), then
+// laid over its container and scaled to cover. Purely decorative → aria-hidden.
+interface Props {
+  color?: string;
+  opacity?: number;
+  cell?: number; // hex radius in the 1200-unit viewBox; larger = sparser
+  class?: string;
+}
+const { color = 'currentColor', opacity = 0.06, cell = 54, class: cls = '' } =
+  Astro.props;
+
+const W = 1200;
+const H = 1200;
+const hexR = cell;
+const hStep = 1.5 * hexR;
+const vStep = Math.sqrt(3) * hexR;
+function hexPath(x: number, y: number, r: number) {
+  let d = '';
+  for (let i = 0; i < 6; i++) {
+    const a = (60 * i * Math.PI) / 180;
+    d += (i === 0 ? 'M' : 'L') + (x + r * Math.cos(a)).toFixed(1) + ' ' + (y + r * Math.sin(a)).toFixed(1) + ' ';
+  }
+  return d + 'Z';
+}
+let d = '';
+for (let x = -hexR; x <= W + hexR; x += hStep) {
+  const col = Math.round(x / hStep);
+  const yShift = col % 2 !== 0 ? vStep / 2 : 0;
+  for (let y = -vStep; y <= H + vStep; y += vStep) {
+    d += hexPath(x, y + yShift, hexR);
+  }
+}
+---
+<svg
+  class={`hex-tex ${cls}`}
+  viewBox={`0 0 ${W} ${H}`}
+  preserveAspectRatio="xMidYMid slice"
+  aria-hidden="true"
+  focusable="false"
+  style={`color:${color};opacity:${opacity}`}
+>
+  <path d={d} fill="none" stroke="currentColor" stroke-width="1.4"></path>
+</svg>
+
+<style>
+  .hex-tex {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+  }
+</style>
