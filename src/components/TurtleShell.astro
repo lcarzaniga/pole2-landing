@@ -61,6 +61,11 @@ const legs = [45, 135, 225, 315].map((deg) => {
           <stop offset="100%" stop-color="#e0a83d" stop-opacity="0"></stop>
         </radialGradient>
       )}
+      <radialGradient id="shimmerGold" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#e0a83d" stop-opacity="0.55"></stop>
+        <stop offset="70%" stop-color="#e0a83d" stop-opacity="0.1"></stop>
+        <stop offset="100%" stop-color="#e0a83d" stop-opacity="0"></stop>
+      </radialGradient>
     </defs>
 
     <!-- limbs / head / tail -->
@@ -75,6 +80,9 @@ const legs = [45, 135, 225, 315].map((deg) => {
     <g clip-path="url(#shellClip)">
       <path d={combo} fill="none" stroke={line} stroke-width="1.6"></path>
       {glow && <circle cx={cx} cy={cy} r={R} fill="url(#gold)"></circle>}
+      <!-- The guardian is quietly alive: a rare, slow gold shimmer crosses the
+           shell once every ~16s. Nothing playful — just a breath of light. -->
+      <circle class="shimmer" cx="52" cy="84" r="52" fill="url(#shimmerGold)"></circle>
     </g>
     <circle cx={cx} cy={cy} r={R} fill="none" stroke={body} stroke-width="3.4"></circle>
   </svg>
@@ -98,9 +106,38 @@ const legs = [45, 135, 225, 315].map((deg) => {
       transform: scale(0.988);
     }
   }
+
+  /* Rare, slow shimmer — invisible most of the cycle, a gentle sweep once. */
+  .shimmer {
+    opacity: 0;
+    animation: shimmer 16s ease-in-out infinite;
+  }
+  @keyframes shimmer {
+    0%,
+    72% {
+      opacity: 0;
+      cx: 50px;
+    }
+    80% {
+      opacity: 0.5;
+    }
+    92% {
+      opacity: 0;
+      cx: 150px;
+    }
+    100% {
+      opacity: 0;
+      cx: 50px;
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
-    .turtle {
+    .turtle,
+    .shimmer {
       animation: none;
+    }
+    .shimmer {
+      opacity: 0;
     }
   }
 </style>

@@ -5,39 +5,13 @@ import TurtleShell from '../components/TurtleShell.astro';
 import HexTexture from '../components/HexTexture.astro';
 import WaitlistForm from '../components/WaitlistForm.astro';
 
-const lostThings = [
-  'le ricevute',
-  'i manuali',
-  'le garanzie',
-  'le memorie d’acquisto',
-  'la storia della manutenzione',
-];
-
 const steps = [
-  {
-    n: '01',
-    title: 'Conserva',
-    body: 'Affidi una cosa a cui tieni a Pole². In pochi secondi è al sicuro.',
-  },
-  {
-    n: '02',
-    title: 'Respira',
-    body: 'Non devi più tenere tutto a mente. Ci pensa lui, con calma.',
-  },
-  {
-    n: '03',
-    title: 'Ritrova',
-    body: 'Quando ti servirà, sarà lì: completo e al suo posto.',
-  },
+  { title: 'Conserva', body: 'Affidi a Pole² una cosa a cui tieni. In un momento è al sicuro.' },
+  { title: 'Respira', body: 'Non devi più tenere tutto a mente. Ci pensa lui.' },
+  { title: 'Ritrova', body: 'Quando servirà, sarà lì. Al suo posto, come l’avevi lasciato.' },
 ];
 
-const privacy = [
-  'Tutto resta sul tuo dispositivo.',
-  'Nessuna pubblicità.',
-  'Nessun tracciamento.',
-  'Nessun cloud obbligatorio.',
-  'Se un giorno vorrai condividere qualcosa, deciderai tu — sempre.',
-];
+const privacy = ['Niente cloud.', 'Niente account.', 'Niente abbonamento.'];
 ---
 
 <Base>
@@ -51,11 +25,10 @@ const privacy = [
           Custodisci ciò che conta.<br />Conta ciò che custodisci.
         </p>
         <p class="hero__sentence">
-          Una casa serena per le cose a cui tieni — e per tutto ciò che vorrai
-          ritrovare domani.
+          La pace di sapere dov’è ciò a cui tieni.
         </p>
         <div class="hero__cta">
-          <a class="btn btn--onPetrol" href="#lista">Avvisami quando sarà disponibile</a>
+          <a class="btn btn--onPetrol" href="#lista">Tienimi un posto</a>
           <p class="hero__reassure">Resta tutto sul tuo dispositivo.</p>
         </div>
       </div>
@@ -66,22 +39,22 @@ const privacy = [
   </header>
 
   <main id="contenuto">
-    <!-- ======================= WHY POLE² EXISTS ======================= -->
-    <section class="section" aria-labelledby="why-h">
-      <div class="wrap read reveal">
-        <p class="eyebrow">Perché esiste</p>
-        <h2 id="why-h">Non perdiamo le cose. Perdiamo la loro storia.</h2>
-        <p class="lead">
-          Un oggetto è lì, sullo scaffale. Quello che sparisce è il resto —
-          quello che ti serve proprio quando ti serve.
-        </p>
-        <ul class="losts" aria-label="Ciò che di solito si perde">
-          {lostThings.map((t) => <li class="losts__item">{t}</li>)}
-        </ul>
-        <p>
-          Pole² tiene tutto questo insieme, accanto alla cosa a cui appartiene.
-          Così non devi cercarlo: è già dove ti aspetti.
-        </p>
+    <!-- ========================== NARRATIVE ========================== -->
+    <section class="section narrative" aria-labelledby="story-h">
+      <div class="wrap read">
+        <p class="anxiety reveal" id="story-h">«So di averlo.<br />Ma dov’è?»</p>
+        <div class="narrative__body reveal">
+          <p>
+            Le cose non diventano un problema quando le perdiamo. Lo diventano
+            mesi dopo, quando ci serve ciò che le accompagnava — e non lo
+            troviamo.
+          </p>
+          <p class="narrative__refrain">
+            La ricevuta. La garanzia. Il manuale.<br />
+            Quell’appunto che ci eravamo ripromessi di ricordare.
+          </p>
+          <p>Pole² tiene tutto vicino, così domani non è mai più difficile di oggi.</p>
+        </div>
       </div>
     </section>
 
@@ -90,19 +63,19 @@ const privacy = [
       <div class="wrap">
         <div class="read reveal">
           <p class="eyebrow">Come ci si sente</p>
-          <h2 id="how-h">Tre gesti tranquilli.</h2>
+          <h2 id="how-h">Affidare. E lasciar andare.</h2>
         </div>
-        <ol class="steps" role="list">
+        <ul class="steps" role="list">
           {
             steps.map((s) => (
               <li class="steps__item reveal">
-                <span class="steps__n" aria-hidden="true">{s.n}</span>
+                <span class="steps__mark" aria-hidden="true" />
                 <h3>{s.title}</h3>
                 <p>{s.body}</p>
               </li>
             ))
           }
-        </ol>
+        </ul>
       </div>
     </section>
 
@@ -112,11 +85,13 @@ const privacy = [
       <div class="wrap read reveal privacy__inner">
         <p class="eyebrow eyebrow--onPetrol">Privacy</p>
         <h2 id="privacy-h">Le tue cose restano tue.</h2>
+        <p class="privacy__lead">Pole² funziona senza chiederti nulla.</p>
         <ul class="privacy__list">
           {privacy.map((p) => <li>{p}</li>)}
         </ul>
         <p class="privacy__closing">
-          Pole² protegge i tuoi interessi, non le sue metriche.
+          I tuoi dati vivono sul tuo dispositivo. Se un giorno vorrai
+          condividerli, deciderai tu — sempre.
         </p>
       </div>
     </section>
@@ -131,11 +106,10 @@ const privacy = [
           fretta.
         </p>
         <p>
-          L’abbiamo sentito dire a Zanzibar, ed è diventato il modo in cui
-          volevamo ci si sentisse usando quest’app. Il piccolo
-          <Wordmark size="1.05em" /> è un gioco:
-          <strong>Pole²</strong> = pole pole. Non serve capirlo subito — è lì, se
-          un giorno vorrai scoprirlo.
+          L’abbiamo sentito dire a Zanzibar. È diventato il modo in cui volevamo
+          ci si sentisse, qui dentro. Il piccolo <Wordmark size="1.05em" /> è un
+          gioco: <strong>Pole²</strong> = pole pole. Non serve capirlo subito —
+          è lì, se un giorno vorrai scoprirlo.
         </p>
       </div>
     </section>
@@ -143,11 +117,11 @@ const privacy = [
     <!-- ========================= WAITING LIST ========================= -->
     <section class="section section--alt" id="lista" aria-labelledby="wl-h">
       <div class="wrap read reveal">
-        <p class="eyebrow">Lista d’attesa</p>
-        <h2 id="wl-h">Ti avvisiamo quando sarà pronto.</h2>
+        <p class="eyebrow">Ci sei anche tu</p>
+        <h2 id="wl-h">Ti teniamo un posto.</h2>
         <p class="lead">
-          Nessuna fretta. Lascia la tua email: ti scriveremo una volta soltanto,
-          quando Pole² sarà disponibile.
+          Lascia la tua email. Ti scriveremo una volta soltanto, quando Pole²
+          sarà pronto. Senza fretta.
         </p>
         <WaitlistForm />
       </div>
@@ -225,28 +199,32 @@ const privacy = [
     justify-content: center;
   }
 
-  /* ------------------------------ WHY / lost ------------------------------ */
-  .losts {
-    list-style: none;
-    padding: 0;
-    margin: 1.5rem 0 1.75rem;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.6rem;
+  /* ----------------------------- NARRATIVE ------------------------------ */
+  .narrative {
+    padding-block: clamp(5rem, 11vw, 9rem);
   }
-  .losts__item {
-    background: var(--shell-tint);
+  .anxiety {
+    font-family: 'Work Sans', 'Inter', sans-serif;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    font-size: clamp(2.4rem, 1.6rem + 4.5vw, 4.25rem);
     color: var(--petrol);
-    border-radius: 999px;
-    padding: 0.5rem 1rem;
-    font-size: 0.98rem;
-    font-weight: 500;
+    margin: 0 0 2rem;
+    text-wrap: balance;
   }
   @media (prefers-color-scheme: dark) {
-    .losts__item {
-      background: var(--surface-alt);
+    .anxiety {
       color: #7fd6be;
     }
+  }
+  .narrative__body p {
+    font-size: clamp(1.15rem, 1rem + 0.7vw, 1.45rem);
+    line-height: 1.55;
+    max-width: 34rem;
+  }
+  .narrative__refrain {
+    color: var(--muted);
   }
 
   /* ------------------------------- STEPS -------------------------------- */
@@ -269,20 +247,16 @@ const privacy = [
     border-radius: var(--radius-lg);
     padding: 1.75rem;
   }
-  .steps__n {
-    font-family: 'Work Sans', sans-serif;
-    font-weight: 600;
-    color: var(--petrol);
-    font-size: 0.95rem;
-    letter-spacing: 0.05em;
-  }
-  @media (prefers-color-scheme: dark) {
-    .steps__n {
-      color: #7fd6be;
-    }
+  .steps__mark {
+    display: block;
+    width: 0.85rem;
+    height: 0.95rem;
+    background: var(--gold);
+    /* the shell motif, used sparingly as a quiet marker */
+    clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%);
   }
   .steps__item h3 {
-    margin: 0.5rem 0 0.4rem;
+    margin: 0.85rem 0 0.4rem;
   }
   .steps__item p {
     margin: 0;
@@ -307,6 +281,11 @@ const privacy = [
   }
   .privacy h2 {
     color: var(--on-petrol);
+  }
+  .privacy__lead {
+    font-size: clamp(1.15rem, 1rem + 0.7vw, 1.4rem);
+    color: var(--on-petrol);
+    margin: 0 0 0.5rem;
   }
   .privacy__list {
     list-style: none;

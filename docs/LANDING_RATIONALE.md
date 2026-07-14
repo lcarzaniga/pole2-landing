@@ -158,6 +158,35 @@ no autoplay.
 
 ---
 
+## Emotional pass (redesign)
+
+A later review judged the first version *intellectually descriptive* — a good SaaS
+landing that **explained** rather than **made felt**. The redesign trades
+explanation for recognition and implication:
+
+- **Signature line added:** the visitor's own inner voice, **«So di averlo. Ma
+  dov'è?»**, is now the centrepiece of a short narrative section right after the
+  hero. It makes a stranger think *"that's me"* before *"I want this app."*
+- **Hero** dropped its descriptive sentence for an emotional one (*La pace di
+  sapere dov'è ciò a cui tieni.*). The motto lockup stays — it's the verbal
+  signature.
+- **Feature chips removed.** The list of nouns (receipts, manuals, warranties…)
+  became a human refrain in prose — *La ricevuta. La garanzia. Il manuale…*
+- **"01/02/03" numbers removed** from the three beats (numbers read as *process/
+  work*, the opposite of calm); replaced with a quiet gold hexagon mark. Heading
+  reframed from "how it works" to a feeling: *Affidare. E lasciar andare.*
+- **Privacy became a confident pillar** — *Pole² funziona senza chiederti nulla.
+  Niente cloud. Niente account. Niente abbonamento.* — stated as identity, calm,
+  never ideological.
+- **CTA** changed from the generic *Avvisami quando sarà disponibile* to **Tienimi
+  un posto** — joining something, being kept a place, not entering a mailing list.
+- **The guardian is now quietly alive:** besides the slow breath, a rare gold
+  shimmer crosses the shell once every ~16s (Reduce-Motion disables it). Not a
+  mascot trick — a breath of light that says *someone is watching over this*.
+
+The brand identity was preserved exactly (turtle, honeycomb, petrol, Work Sans
+wordmark). This was an improvement, not a restart.
+
 ## Critical self-review (as if reviewing another team's work)
 
 - **Fonts are the weak point.** Shipping 1.2 MB of TTF is not "extremely fast."

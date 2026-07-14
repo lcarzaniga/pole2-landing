@@ -26,7 +26,7 @@ const { endpoint = '' } = Astro.props;
       aria-describedby="wl-note wl-status"
     />
     <button class="btn btn--primary waitlist__submit" type="submit">
-      Avvisami quando sarà disponibile
+      Tienimi un posto
     </button>
   </div>
   <p id="wl-note" class="waitlist__note">
@@ -139,7 +139,7 @@ const { endpoint = '' } = Astro.props;
 
       // Calm confirmation (also the path used while no provider is attached).
       form.classList.add('is-done');
-      say('Ci sei. Ti avviseremo con calma, appena Pole² sarà pronto.');
+      say('Il tuo posto è tenuto. Ti scriveremo appena Pole² sarà pronto.');
       status.focus?.();
     });
   }
