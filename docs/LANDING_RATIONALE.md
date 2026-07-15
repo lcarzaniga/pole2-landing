@@ -187,6 +187,37 @@ explanation for recognition and implication:
 The brand identity was preserved exactly (turtle, honeycomb, petrol, Work Sans
 wordmark). This was an improvement, not a restart.
 
+## Brand-consistency pass (M14 — canonical Kobe)
+
+A focused polish milestone, no structural change. The turtle was brought to a
+**canonical geometry** (documented in `BRAND_BIBLE.md §10a`,
+`DESIGN_SYSTEM.md §3.4a`) as a reusable component, `src/components/Kobe.astro`
+(replacing `TurtleShell.astro`):
+
+- **Elliptical shell** (h/v ratio **0.90**, taller than wide) — no longer a
+  circle.
+- **Exactly 7 hexagons** (1 central + 6 neighbours) as the shell scutes — not the
+  old many-cell clipped honeycomb. (Background `HexTexture` still has many faint
+  cells; the two are deliberately distinct.)
+- **Rounded bullet head** (domed top, softly rounded base) — not a circle.
+- Four soft diagonal limbs + a **rounded tail nub** — not a triangle.
+- **Figure-ground separation** (Kobe was blending into the petrol hero): a **soft
+  warm halo** behind Kobe, a **satin sheen** on the shell, and a darker body tone
+  so limbs read against both the light and dark ends of the hero gradient. No
+  outlines/shadows/spotlight — Kobe *emerges* rather than being highlighted.
+- **Idle presence:** the old shimmer was imperceptible. Replaced with an
+  **infrequent** (~9–14 s), clearly-visible satin shimmer, JS-driven so it
+  **pauses on inactive tab** and is **off under Reduce Motion**. One-shot, never
+  continuous — presence, not engagement.
+
+**Cross-product discrepancy (documented, not silently allowed).** Before M14 the
+landing turtle and the Flutter app (`lib/shared/brand/turtle_mascot.dart`) shared
+the *same* non-canonical geometry (circular shell, many-cell honeycomb, circular
+head, triangular tail). The **landing is now the first corrected implementation**
+of the canonical geometry; the **Flutter app is intentionally left unchanged this
+milestone** and is to be updated to match later. The canonical spec lives in
+`BRAND_BIBLE.md §10a` so both products converge on one Kobe.
+
 ## Critical self-review (as if reviewing another team's work)
 
 - **Fonts are the weak point.** Shipping 1.2 MB of TTF is not "extremely fast."

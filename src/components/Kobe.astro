@@ -1,0 +1,185 @@
+---
+// Kobe — the guardian, in canonical geometry (see docs/BRAND_BIBLE.md
+// "Kobe Canonical Geometry"). Reusable vector component so the same Kobe can be
+// used across landing, app, icon and social images.
+//
+// Invariants:
+//  - shell is an ELLIPSE, horizontal/vertical axis ratio = 0.90 (taller than wide)
+//  - shell contains EXACTLY 7 hexagons: 1 central + 6 around (never more/fewer)
+//  - head is a rounded BULLET: taller than wide, domed top, softly rounded base
+//  - 4 limbs peek at the diagonals; a small rounded tail nub at the bottom
+// Decorative background honeycomb (HexTexture) may have many cells; Kobe's shell
+// is always exactly 7.
+interface Props {
+  size?: string;
+  halo?: boolean;
+  shell?: string;
+  body?: string;
+  line?: string;
+  class?: string;
+}
+const {
+  size = '260px',
+  halo = false,
+  shell = '#a7ded0',
+  body = '#123f34',
+  line = 'rgba(18,63,52,0.5)',
+  class: cls = '',
+} = Astro.props;
+
+// --- shell ellipse (ratio 0.90) ---
+const cx = 100;
+const cy = 104;
+const ry = 48;
+const rx = +(ry * 0.9).toFixed(2); // 43.2 — the 0.90 invariant
+
+// --- exactly 7 hexagons: 1 central + 6 neighbours (flat-top, edge-sharing) ---
+const hexR = 16;
+const petal = Math.sqrt(3) * hexR; // centre-to-centre for shared edges
+function hexPath(x: number, y: number, r: number) {
+  let d = '';
+  for (let i = 0; i < 6; i++) {
+    const a = (60 * i * Math.PI) / 180; // flat-top: vertices at 0,60,…
+    d += (i === 0 ? 'M' : 'L') + (x + r * Math.cos(a)).toFixed(2) + ' ' + (y + r * Math.sin(a)).toFixed(2) + ' ';
+  }
+  return d + 'Z';
+}
+const centres: [number, number][] = [[cx, cy]];
+for (const deg of [30, 90, 150, 210, 270, 330]) {
+  const a = (deg * Math.PI) / 180;
+  centres.push([cx + petal * Math.cos(a), cy + petal * Math.sin(a)]);
+}
+const scutes = centres.map(([x, y]) => hexPath(x, y, hexR)).join('');
+
+// --- rounded bullet head (domed top, softly rounded base) ---
+const hTop = 30, hBot = 60, hL = 89, hR = 111, topR = 11, botR = 7;
+const head = `M ${hL} ${hTop + topR} A ${topR} ${topR} 0 0 1 ${hR} ${hTop + topR} L ${hR} ${hBot - botR} A ${botR} ${botR} 0 0 1 ${hR - botR} ${hBot} L ${hL + botR} ${hBot} A ${botR} ${botR} 0 0 1 ${hL} ${hBot - botR} Z`;
+
+// --- limbs (soft ovals) at the diagonals + tail nub ---
+const limbs = [-52, -128, 52, 128].map((deg) => {
+  const a = (deg * Math.PI) / 180;
+  return { x: +(cx + rx * Math.cos(a)).toFixed(1), y: +(cy + ry * Math.sin(a)).toFixed(1) };
+});
+---
+<span class={`kobe ${cls}`} style={`--kobe-size:${size}`} aria-hidden="true">
+  {halo && <span class="kobe__halo"></span>}
+  <svg viewBox="0 0 200 200" role="img" aria-label="Kobe, la tartaruga di Pole²" width="100%" height="100%">
+    <defs>
+      <clipPath id="kobeShell"><ellipse cx={cx} cy={cy} rx={rx} ry={ry}></ellipse></clipPath>
+      <radialGradient id="kobeSatin" cx="34%" cy="30%" r="60%">
+        <stop offset="0%" stop-color="#f6f1e7" stop-opacity="0.22"></stop>
+        <stop offset="100%" stop-color="#f6f1e7" stop-opacity="0"></stop>
+      </radialGradient>
+      <radialGradient id="kobeSheen" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#fbf6ea" stop-opacity="0.95"></stop>
+        <stop offset="55%" stop-color="#e0a83d" stop-opacity="0.35"></stop>
+        <stop offset="100%" stop-color="#e0a83d" stop-opacity="0"></stop>
+      </radialGradient>
+    </defs>
+
+    <!-- limbs / tail / head, under the shell -->
+    {limbs.map((l) => <ellipse cx={l.x} cy={l.y} rx="9" ry="11" fill={body}></ellipse>)}
+    <ellipse cx={cx} cy={cy + ry} rx="6.5" ry="9" fill={body}></ellipse>
+    <path d={head} fill={body}></path>
+
+    <!-- shell: elliptical dome + exactly 7 scutes + satin sheen + rim -->
+    <ellipse cx={cx} cy={cy} rx={rx} ry={ry} fill={shell}></ellipse>
+    <g clip-path="url(#kobeShell)">
+      <path d={scutes} fill="none" stroke={line} stroke-width="1.7"></path>
+      <ellipse cx={cx} cy={cy} rx={rx} ry={ry} fill="url(#kobeSatin)"></ellipse>
+      <ellipse class="kobe__shimmer" cx="80" cy="92" rx="34" ry="40" fill="url(#kobeSheen)"></ellipse>
+    </g>
+    <ellipse cx={cx} cy={cy} rx={rx} ry={ry} fill="none" stroke={body} stroke-width="3.2"></ellipse>
+  </svg>
+</span>
+
+<style>
+  .kobe {
+    position: relative;
+    display: inline-block;
+    width: var(--kobe-size);
+    height: var(--kobe-size);
+    max-width: 100%;
+  }
+  /* A very soft warm halo — helps Kobe emerge from the petrol hero without any
+     outline, spotlight or shadow. Optional (hero only). */
+  .kobe__halo {
+    position: absolute;
+    inset: -26%;
+    z-index: 0;
+    pointer-events: none;
+    background: radial-gradient(
+      circle at 50% 46%,
+      rgba(246, 241, 231, 0.16),
+      rgba(246, 241, 231, 0.06) 42%,
+      transparent 68%
+    );
+  }
+  .kobe svg {
+    position: relative;
+    z-index: 1;
+    display: block;
+  }
+
+  /* Idle presence: an occasional satin shimmer sweeps the shell (~every 9–14s,
+     driven by JS so it can be infrequent, pause on hidden tab, and stay off
+     under Reduce Motion). One-shot, never continuous. */
+  .kobe__shimmer {
+    opacity: 0;
+  }
+  .kobe__shimmer.play {
+    animation: kobeShimmer 1.9s ease-in-out;
+  }
+  @keyframes kobeShimmer {
+    0% {
+      opacity: 0;
+      cx: 74px;
+    }
+    45% {
+      opacity: 0.62;
+    }
+    100% {
+      opacity: 0;
+      cx: 128px;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .kobe__shimmer,
+    .kobe__shimmer.play {
+      animation: none;
+      opacity: 0;
+    }
+  }
+</style>
+
+<script>
+  // Infrequent, presence-only idle shimmer. No continuous animation.
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.querySelectorAll<HTMLElement>('.kobe').forEach((kobe) => {
+    const shimmer = kobe.querySelector<SVGElement>('.kobe__shimmer');
+    if (!shimmer) return;
+    let timer: number | undefined;
+    const schedule = () => {
+      window.clearTimeout(timer);
+      if (reduce || document.hidden) return;
+      timer = window.setTimeout(play, 9000 + Math.random() * 5000);
+    };
+    const play = () => {
+      if (reduce || document.hidden) return schedule();
+      shimmer.classList.add('play');
+    };
+    shimmer.addEventListener('animationend', () => {
+      shimmer.classList.remove('play');
+      schedule();
+    });
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        window.clearTimeout(timer);
+        shimmer.classList.remove('play');
+      } else {
+        schedule();
+      }
+    });
+    schedule();
+  });
+</script>
