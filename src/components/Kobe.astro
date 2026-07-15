@@ -112,12 +112,22 @@ const dataAttrs = {
     </defs>
 
     <!-- limbs rebalance the opposite way — under the shell -->
-    <g class="kobe-limbs">
-      {limbs.map((l) => <ellipse cx={l.x} cy={l.y} rx="9" ry="11" fill={body}></ellipse>)}
+    <g class="kobe-legs-upper">
+      <ellipse cx={limbs[0].x} cy={limbs[0].y} rx="9" ry="11" fill={body}></ellipse>
+      <ellipse cx={limbs[1].x} cy={limbs[1].y} rx="9" ry="11" fill={body}></ellipse>
+    </g>
+    <g class="kobe-legs-lower">
+      <ellipse cx={limbs[2].x} cy={limbs[2].y} rx="9" ry="11" fill={body}></ellipse>
+      <ellipse cx={limbs[3].x} cy={limbs[3].y} rx="9" ry="11" fill={body}></ellipse>
     </g>
     <!-- head + pointed tail rotate together around the shell centre — under the shell -->
-    <g class="kobe-spine">
+    <!-- head and tail are SEPARATE groups so their TIPS can move to the SAME
+         side (they counter-rotate around the shell centre); the legs go the
+         opposite side. -->
+    <g class="kobe-tail">
       <polygon points={tail} fill={body}></polygon>
+    </g>
+    <g class="kobe-head">
       <path d={head} fill={body}></path>
     </g>
 
@@ -206,47 +216,70 @@ const dataAttrs = {
 
   /* The shell is the fixed pivot; the body rebalances around the shell centre.
      Rotation only — no translate/scale/bounce/loop. */
-  .kobe-spine,
-  .kobe-limbs {
+  .kobe-head,
+  .kobe-tail,
+  .kobe-legs-upper,
+  .kobe-legs-lower {
     transform-box: view-box;
     transform-origin: 100px 104px;
   }
 
-  /* Idle: a small posture adjustment (played by the script). */
-  .kobe.playing-idle .kobe-spine {
-    animation: kobeSpine 840ms ease-in-out both;
-  }
-  .kobe.playing-idle .kobe-limbs {
-    animation: kobeLimbs 840ms ease-in-out both;
-  }
-  @keyframes kobeSpine {
+  /* Idle. Head + tail TIPS move to the SAME side (they counter-rotate around the
+     shell centre); the upper AND lower legs move to the OPPOSITE side (they too
+     counter-rotate, so all four end up on that side); then mirror; then settle.
+     The shell never moves. */
+  .kobe.playing-idle .kobe-head { animation: kobeHead 840ms ease-in-out both; }
+  .kobe.playing-idle .kobe-tail { animation: kobeTail 840ms ease-in-out both; }
+  .kobe.playing-idle .kobe-legs-upper { animation: kobeLegsUpper 840ms ease-in-out both; }
+  .kobe.playing-idle .kobe-legs-lower { animation: kobeLegsLower 840ms ease-in-out both; }
+  /* head tip → side A, tail tip → side A */
+  @keyframes kobeHead {
     0%, 100% { transform: rotate(0deg); }
     28%, 42% { transform: rotate(6deg); }
     72%, 86% { transform: rotate(-6deg); }
   }
-  @keyframes kobeLimbs {
+  @keyframes kobeTail {
+    0%, 100% { transform: rotate(0deg); }
+    28%, 42% { transform: rotate(-6deg); }
+    72%, 86% { transform: rotate(6deg); }
+  }
+  /* upper legs → side B, lower legs → side B (opposite to head+tail) */
+  @keyframes kobeLegsUpper {
     0%, 100% { transform: rotate(0deg); }
     28%, 42% { transform: rotate(-4deg); }
     72%, 86% { transform: rotate(4deg); }
   }
+  @keyframes kobeLegsLower {
+    0%, 100% { transform: rotate(0deg); }
+    28%, 42% { transform: rotate(4deg); }
+    72%, 86% { transform: rotate(-4deg); }
+  }
 
   /* Reaction (click/tap): larger, clearly visible — "gently disturbed". Head+tail
      swing to one side, limbs the opposite way, a brief reverse, then settle. */
-  .kobe.reacting .kobe-spine {
-    animation: kobeReactSpine 780ms ease-in-out both;
-  }
-  .kobe.reacting .kobe-limbs {
-    animation: kobeReactLimbs 780ms ease-in-out both;
-  }
-  @keyframes kobeReactSpine {
+  .kobe.reacting .kobe-head { animation: kobeReactHead 780ms ease-in-out both; }
+  .kobe.reacting .kobe-tail { animation: kobeReactTail 780ms ease-in-out both; }
+  .kobe.reacting .kobe-legs-upper { animation: kobeReactLegsUpper 780ms ease-in-out both; }
+  .kobe.reacting .kobe-legs-lower { animation: kobeReactLegsLower 780ms ease-in-out both; }
+  @keyframes kobeReactHead {
     0%, 100% { transform: rotate(0deg); }
     35% { transform: rotate(11deg); }
     70% { transform: rotate(-7deg); }
   }
-  @keyframes kobeReactLimbs {
+  @keyframes kobeReactTail {
+    0%, 100% { transform: rotate(0deg); }
+    35% { transform: rotate(-11deg); }
+    70% { transform: rotate(7deg); }
+  }
+  @keyframes kobeReactLegsUpper {
     0%, 100% { transform: rotate(0deg); }
     35% { transform: rotate(-7deg); }
     70% { transform: rotate(4.5deg); }
+  }
+  @keyframes kobeReactLegsLower {
+    0%, 100% { transform: rotate(0deg); }
+    35% { transform: rotate(7deg); }
+    70% { transform: rotate(-4.5deg); }
   }
 
   /* Reduce Motion: no rotation. The reaction becomes a brief, subtle shell
@@ -260,8 +293,10 @@ const dataAttrs = {
     100% { opacity: 0; }
   }
   @media (prefers-reduced-motion: reduce) {
-    .kobe-spine,
-    .kobe-limbs {
+    .kobe-head,
+    .kobe-tail,
+    .kobe-legs-upper,
+    .kobe-legs-lower {
       animation: none !important;
       transform: none !important;
     }
