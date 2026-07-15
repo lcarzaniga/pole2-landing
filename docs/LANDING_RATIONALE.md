@@ -196,9 +196,11 @@ A focused polish milestone, no structural change. The turtle was brought to a
 
 - **Elliptical shell** (h/v ratio **0.90**, taller than wide) — no longer a
   circle.
-- **Exactly 7 hexagons** (1 central + 6 neighbours) as the shell scutes — not the
-  old many-cell clipped honeycomb. (Background `HexTexture` still has many faint
-  cells; the two are deliberately distinct.)
+- **Tessellated shell scutes** — a regular hex grid fully tessellated across the
+  shell and **clipped by the ellipse**, with a recognizable **7-cell core** (1
+  central + 6) always present and additional cells continuing to the clipped
+  edge. (Corrected from the first M14 pass, which stopped at a lone 7-cell
+  "flower"; see the geometry study.) Distinct from the free-cell `HexTexture`.
 - **Rounded bullet head** (domed top, softly rounded base) — not a circle.
 - Four soft diagonal limbs + a **rounded tail nub** — not a triangle.
 - **Figure-ground separation** (Kobe was blending into the petrol hero): a **soft

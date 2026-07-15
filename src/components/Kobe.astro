@@ -3,13 +3,16 @@
 // "Kobe Canonical Geometry"). Reusable vector component so the same Kobe can be
 // used across landing, app, icon and social images.
 //
-// Invariants:
-//  - shell is an ELLIPSE, horizontal/vertical axis ratio = 0.90 (taller than wide)
-//  - shell contains EXACTLY 7 hexagons: 1 central + 6 around (never more/fewer)
-//  - head is a rounded BULLET: taller than wide, domed top, softly rounded base
-//  - 4 limbs peek at the diagonals; a small rounded tail nub at the bottom
-// Decorative background honeycomb (HexTexture) may have many cells; Kobe's shell
-// is always exactly 7.
+// Shell construction:
+//  - the shell is an ELLIPSE, horizontal/vertical axis ratio = 0.90 (taller than wide)
+//  - it is FULLY TESSELLATED with one regular hex grid, centred on a cell, and
+//    the tessellation is CLIPPED by the ellipse (outer cells are naturally cut)
+//  - the grid is arranged so the canonical core — 1 central + 6 surrounding
+//    complete hexagons — is always present and recognizable at the centre;
+//    additional cells continue outward to the clipped edge.
+//  - (this is distinct from the decorative background honeycomb, which may have
+//    many faint cells; here the cells ARE the shell's structure)
+//  - head is a rounded BULLET; four soft diagonal limbs; a small rounded tail nub
 interface Props {
   size?: string;
   halo?: boolean;
@@ -30,29 +33,36 @@ const {
 // --- shell ellipse (ratio 0.90) ---
 const cx = 100;
 const cy = 104;
-const ry = 48;
-const rx = +(ry * 0.9).toFixed(2); // 43.2 — the 0.90 invariant
+const ry = 52;
+const rx = +(ry * 0.9).toFixed(2); // 46.8 — the 0.90 invariant
 
-// --- exactly 7 hexagons: 1 central + 6 neighbours (flat-top, edge-sharing) ---
-const hexR = 16;
-const petal = Math.sqrt(3) * hexR; // centre-to-centre for shared edges
+// --- continuous hex tessellation, centred on a cell, clipped to the ellipse ---
+const hexR = 15;
+const hStep = 1.5 * hexR;
+const vStep = Math.sqrt(3) * hexR;
 function hexPath(x: number, y: number, r: number) {
   let d = '';
   for (let i = 0; i < 6; i++) {
-    const a = (60 * i * Math.PI) / 180; // flat-top: vertices at 0,60,…
+    const a = (60 * i * Math.PI) / 180; // flat-top
     d += (i === 0 ? 'M' : 'L') + (x + r * Math.cos(a)).toFixed(2) + ' ' + (y + r * Math.sin(a)).toFixed(2) + ' ';
   }
   return d + 'Z';
 }
-const centres: [number, number][] = [[cx, cy]];
-for (const deg of [30, 90, 150, 210, 270, 330]) {
-  const a = (deg * Math.PI) / 180;
-  centres.push([cx + petal * Math.cos(a), cy + petal * Math.sin(a)]);
+const cells: [number, number][] = [];
+for (let col = -4; col <= 4; col++) {
+  for (let row = -4; row <= 4; row++) {
+    const x = cx + col * hStep;
+    const y = cy + row * vStep + (col % 2 !== 0 ? vStep / 2 : 0);
+    // keep any cell whose body can intersect the shell; the ellipse clip cuts them
+    if (((x - cx) / (rx + hexR)) ** 2 + ((y - cy) / (ry + hexR)) ** 2 <= 1) {
+      cells.push([x, y]);
+    }
+  }
 }
-const scutes = centres.map(([x, y]) => hexPath(x, y, hexR)).join('');
+const scutes = cells.map(([x, y]) => hexPath(x, y, hexR)).join('');
 
 // --- rounded bullet head (domed top, softly rounded base) ---
-const hTop = 30, hBot = 60, hL = 89, hR = 111, topR = 11, botR = 7;
+const hTop = 26, hBot = 56, hL = 89, hR = 111, topR = 11, botR = 7;
 const head = `M ${hL} ${hTop + topR} A ${topR} ${topR} 0 0 1 ${hR} ${hTop + topR} L ${hR} ${hBot - botR} A ${botR} ${botR} 0 0 1 ${hR - botR} ${hBot} L ${hL + botR} ${hBot} A ${botR} ${botR} 0 0 1 ${hL} ${hBot - botR} Z`;
 
 // --- limbs (soft ovals) at the diagonals + tail nub ---
@@ -82,12 +92,12 @@ const limbs = [-52, -128, 52, 128].map((deg) => {
     <ellipse cx={cx} cy={cy + ry} rx="6.5" ry="9" fill={body}></ellipse>
     <path d={head} fill={body}></path>
 
-    <!-- shell: elliptical dome + exactly 7 scutes + satin sheen + rim -->
+    <!-- shell: elliptical dome + tessellated scutes (clipped) + satin sheen + rim -->
     <ellipse cx={cx} cy={cy} rx={rx} ry={ry} fill={shell}></ellipse>
     <g clip-path="url(#kobeShell)">
-      <path d={scutes} fill="none" stroke={line} stroke-width="1.7"></path>
+      <path d={scutes} fill="none" stroke={line} stroke-width="1.6"></path>
       <ellipse cx={cx} cy={cy} rx={rx} ry={ry} fill="url(#kobeSatin)"></ellipse>
-      <ellipse class="kobe__shimmer" cx="80" cy="92" rx="34" ry="40" fill="url(#kobeSheen)"></ellipse>
+      <ellipse class="kobe__shimmer" cx="78" cy="98" rx="34" ry="42" fill="url(#kobeSheen)"></ellipse>
     </g>
     <ellipse cx={cx} cy={cy} rx={rx} ry={ry} fill="none" stroke={body} stroke-width="3.2"></ellipse>
   </svg>
@@ -140,7 +150,7 @@ const limbs = [-52, -128, 52, 128].map((deg) => {
     }
     100% {
       opacity: 0;
-      cx: 128px;
+      cx: 126px;
     }
   }
   @media (prefers-reduced-motion: reduce) {
