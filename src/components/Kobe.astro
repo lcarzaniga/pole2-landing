@@ -24,6 +24,10 @@ interface Props {
   body?: string;
   line?: string;
   class?: string;
+  // Test seams (off in production): shorten the idle window / enable logging.
+  idleMin?: number;
+  idleSpan?: number;
+  debug?: boolean;
 }
 const {
   size = '260px',
@@ -34,6 +38,9 @@ const {
   body = '#123f34',
   line = 'rgba(18,63,52,0.5)',
   class: cls = '',
+  idleMin,
+  idleSpan,
+  debug = false,
 } = Astro.props;
 
 const cx = 100, cy = 104, ry = 52;
@@ -77,11 +84,17 @@ const limbs = [-52, -128, 52, 128].map((deg) => {
 const a11y = interactive
   ? { role: 'button', tabindex: '0', 'aria-label': label }
   : { 'aria-hidden': 'true' };
+const dataAttrs = {
+  ...(idleMin !== undefined ? { 'data-idle-min': String(idleMin) } : {}),
+  ...(idleSpan !== undefined ? { 'data-idle-span': String(idleSpan) } : {}),
+  ...(debug ? { 'data-debug': '' } : {}),
+};
 ---
 <span
   class={`kobe ${interactive ? 'kobe--interactive' : ''} ${cls}`.trim()}
   style={`--kobe-size:${size}`}
   {...a11y}
+  {...dataAttrs}
 >
   {halo && <span class="kobe__halo"></span>}
   <svg viewBox="0 0 200 200" role="img" aria-label="Kobe, la tartaruga di Pole²" width="100%" height="100%">
@@ -116,6 +129,10 @@ const a11y = interactive
       <ellipse class="kobe__flash" cx={cx} cy={cy} rx={rx} ry={ry} fill="url(#kobeFlash)"></ellipse>
     </g>
     <ellipse cx={cx} cy={cy} rx={rx} ry={ry} fill="none" stroke={body} stroke-width="3.2"></ellipse>
+
+    <!-- Interactive hit target = the SHELL only. Head/tail/limbs and the empty
+         box are not clickable, so the reaction only fires on the shell. -->
+    {interactive && <ellipse class="kobe-hit" cx={cx} cy={cy} rx={rx} ry={ry} fill="transparent"></ellipse>}
   </svg>
 </span>
 
@@ -128,8 +145,15 @@ const a11y = interactive
     max-width: 100%;
   }
   .kobe--interactive {
-    cursor: pointer;
     -webkit-tap-highlight-color: transparent;
+  }
+  /* Only the shell is a pointer target; everything else passes through. */
+  .kobe--interactive svg {
+    pointer-events: none;
+  }
+  .kobe--interactive .kobe-hit {
+    pointer-events: fill;
+    cursor: pointer;
   }
   .kobe--interactive:focus-visible {
     outline: 2px solid #e0a83d;
@@ -223,33 +247,51 @@ const a11y = interactive
 
 <script>
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const IDLE_MS = 900;
-  const REACT_MS = 820;
+  const IDLE_MS = 900; // idle animation length
+  const REACT_MS = 820; // reaction animation length
 
   document.querySelectorAll<HTMLElement>('.kobe').forEach((kobe) => {
+    // Idle window (production defaults; overridable for testing via data-*).
+    const idleMin = kobe.dataset.idleMin !== undefined ? Number(kobe.dataset.idleMin) : 25000;
+    const idleSpan = kobe.dataset.idleSpan !== undefined ? Number(kobe.dataset.idleSpan) : 25000;
+    const debug = kobe.dataset.debug !== undefined;
+    const log = (...a: unknown[]) => debug && console.log('[kobe]', ...a);
+
+    // Exactly one idle timer at a time.
     let idleTimer: number | undefined;
     let reacting = false;
 
-    const scheduleIdle = () => {
+    const clearIdle = () => {
       window.clearTimeout(idleTimer);
+      idleTimer = undefined;
+    };
+    const scheduleIdle = () => {
+      clearIdle(); // never allow concurrent timers
       if (reduce || document.hidden || reacting) return;
-      idleTimer = window.setTimeout(playIdle, 25000 + Math.random() * 25000);
+      const delay = idleMin + Math.random() * idleSpan;
+      idleTimer = window.setTimeout(playIdle, delay);
+      log('idle scheduled in', Math.round(delay), 'ms');
     };
     const playIdle = () => {
+      idleTimer = undefined;
       if (reduce || document.hidden || reacting) return scheduleIdle();
+      log('idle play');
       kobe.classList.add('playing-idle');
       window.setTimeout(() => {
         kobe.classList.remove('playing-idle');
-        scheduleIdle();
+        scheduleIdle(); // after every idle animation, a new random delay
       }, IDLE_MS);
     };
 
-    // Reaction: ignore further input until the current one finishes (no stacking).
+    // Reaction: only from a direct click/tap on the shell (or keyboard). Cancels
+    // the idle timer, plays, then starts a fresh idle delay. Ignores repeat input
+    // until it finishes (no stacking).
     const react = () => {
       if (reacting) return;
       reacting = true;
-      window.clearTimeout(idleTimer); // stop the passive idle cue while reacting
+      clearIdle();
       kobe.classList.remove('playing-idle');
+      log('reaction');
       kobe.classList.add('reacting');
       window.setTimeout(() => {
         kobe.classList.remove('reacting');
@@ -259,7 +301,9 @@ const a11y = interactive
     };
 
     if (kobe.classList.contains('kobe--interactive')) {
-      kobe.addEventListener('click', react);
+      // Pointer/touch: only the shell hit-ellipse triggers the reaction.
+      kobe.querySelector('.kobe-hit')?.addEventListener('click', react);
+      // Keyboard activation of the focused guardian.
       kobe.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault(); // Space must not scroll the page
@@ -268,21 +312,18 @@ const a11y = interactive
       });
     }
 
-    // Reset the idle window on genuine activity (throttled), so it only stirs
-    // when things are calm. Never interrupts a movement in progress.
-    let last = 0;
-    const onActivity = () => {
-      const now = Date.now();
-      if (now - last < 1500) return;
-      last = now;
-      if (!reacting && !kobe.classList.contains('playing-idle')) scheduleIdle();
-    };
-    for (const ev of ['pointerdown', 'keydown', 'scroll', 'pointermove']) {
-      window.addEventListener(ev, onActivity, { passive: true });
-    }
+    // The idle timer is NOT reset by general page interaction (scroll, keys,
+    // pointer moves, clicks on other elements). It only resets on a direct shell
+    // click (above) or after an automatic idle animation. It is suspended while
+    // the tab is hidden.
     document.addEventListener('visibilitychange', () => {
-      if (document.hidden) window.clearTimeout(idleTimer);
-      else scheduleIdle();
+      if (document.hidden) {
+        clearIdle();
+        log('hidden: timer suspended');
+      } else {
+        log('visible: reschedule');
+        scheduleIdle();
+      }
     });
 
     scheduleIdle();

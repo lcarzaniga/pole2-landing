@@ -218,14 +218,23 @@ A focused polish milestone, no structural change. The turtle was brought to a
   inactive tab**, and is **off under Reduce Motion**. (Supersedes the earlier
   shimmer exploration; the static satin sheen stays as depth, not motion.) Spec:
   `BRAND_BIBLE.md §13a` — reused across Flutter/website/marketing.
+- **Idle timer (corrected).** One recurring random delay (~25–50 s). It is **not**
+  reset by general page interaction (scroll, keyboard, pointer movement, clicks on
+  other links/buttons). It resets **only** on a direct shell click (which cancels
+  it and plays the reaction) or after each automatic idle play. Single timer, and
+  **suspended while the tab is hidden**. Verified in headless Chrome (Puppeteer):
+  general activity produced 0 resets; a shell click reacted + rescheduled; an
+  off-shell click did nothing; hidden suspended and visible resumed.
 - **Click/tap reaction (interactive Kobe).** The idle cue is too subtle to notice
   on the web, so the hero Kobe is interactive: a direct click/tap/keyboard press
   plays a **clearly-visible** version of the same gesture — head+tail **8.5°** one
   way, limbs **−5°** the opposite way, a brief reverse (**−4.5° / +2.7°**), settle
   to rest, **780 ms**, springless ease-in-out. Reads as “gently disturbed,” never
-  frightened/angry. Works with mouse/touch/keyboard (Enter/Space); it **stops the
-  idle cue** and **ignores repeat input until done** (no stacking). Signalled by a
-  pointer cursor + `role=button` accessible label (no visible button/text). Under
+  frightened/angry. Triggered **only by a direct click/tap on the shell** (a hit
+  ellipse; head/limbs/empty box are not clickable) or keyboard (Enter/Space); it
+  **stops the idle cue** and **ignores repeat input until done** (no stacking).
+  Signalled by a pointer cursor over the shell + `role=button` accessible label
+  (no visible button/text). Under
   **Reduce Motion** the rotation becomes a brief satin/gold **shell highlight**.
 
 **Cross-product discrepancy (documented, not silently allowed).** Before M14 the
