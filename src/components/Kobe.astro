@@ -1,26 +1,25 @@
 ---
 // Kobe — the guardian, in canonical geometry (see docs/BRAND_BIBLE.md
-// "Kobe Canonical Geometry"). Reusable vector component so the same Kobe can be
-// used across landing, app, icon and social images.
+// "Kobe Canonical Geometry"). Reusable vector component (landing/app/icon/social).
 //
-// Shell construction:
-//  - the shell is an ELLIPSE, horizontal/vertical axis ratio = 0.90 (taller than wide)
-//  - it is FULLY TESSELLATED with one regular hex grid, centred on a cell, and
-//    the tessellation is CLIPPED by the ellipse (outer cells are naturally cut)
-//  - the canonical core — 1 central + 6 surrounding complete hexagons — is always
-//    present and recognizable at the centre; additional cells continue to the edge
-//  - head is a rounded BULLET; four soft diagonal limbs; a small rounded tail nub
+// Shell: an ELLIPSE (h/v ratio 0.90), FULLY TESSELLATED with one regular hex grid
+// centred on a cell and CLIPPED by the ellipse; the canonical core (1 central + 6
+// surrounding complete hexagons) is always recognizable, with more cells to the
+// clipped edge. Head: a rounded, elongated BULLET. Tail: short, TRIANGULAR,
+// clearly POINTED, centred on the vertical axis (the only pointed body element).
+// Four soft diagonal limbs.
 //
-// Idle behaviour (canonical — see BRAND_BIBLE "Kobe idle animation"):
-//  - after ~25–50s of inactivity, ONE calm posture adjustment
-//  - the SHELL is the fixed pivot; head+tail rotate a few degrees to one side and
-//    the four limbs rotate slightly the opposite way, brief pause, sway to the
-//    other side, then settle back to rest (~840ms, ease-in-out)
-//  - rotation only — never translate/scale/bounce/loop; pauses on hidden tab;
-//    off under Reduce Motion.
+// Motion (canonical — BRAND_BIBLE §13a): the SHELL is a fixed pivot; head+tail
+// rotate one way and the limbs the opposite way around the shell centre.
+//  - idle: a small posture adjustment after ~25–50s of inactivity
+//  - reaction: a larger, clearly-visible "you gently disturbed me" on click/tap
+// Rotation only — never translate/scale/bounce/loop; pauses on hidden tab; off
+// (rotation replaced by a brief shell highlight) under Reduce Motion.
 interface Props {
   size?: string;
   halo?: boolean;
+  interactive?: boolean;
+  label?: string;
   shell?: string;
   body?: string;
   line?: string;
@@ -29,26 +28,25 @@ interface Props {
 const {
   size = '260px',
   halo = false,
+  interactive = false,
+  label = 'Kobe, la tartaruga di Pole²',
   shell = '#a7ded0',
   body = '#123f34',
   line = 'rgba(18,63,52,0.5)',
   class: cls = '',
 } = Astro.props;
 
-// --- shell ellipse (ratio 0.90) ---
-const cx = 100;
-const cy = 104;
-const ry = 52;
+const cx = 100, cy = 104, ry = 52;
 const rx = +(ry * 0.9).toFixed(2); // 46.8 — the 0.90 invariant
 
-// --- continuous hex tessellation, centred on a cell, clipped to the ellipse ---
+// continuous hex tessellation, centred on a cell, clipped to the ellipse
 const hexR = 15;
 const hStep = 1.5 * hexR;
 const vStep = Math.sqrt(3) * hexR;
 function hexPath(x: number, y: number, r: number) {
   let d = '';
   for (let i = 0; i < 6; i++) {
-    const a = (60 * i * Math.PI) / 180; // flat-top
+    const a = (60 * i * Math.PI) / 180;
     d += (i === 0 ? 'M' : 'L') + (x + r * Math.cos(a)).toFixed(2) + ' ' + (y + r * Math.sin(a)).toFixed(2) + ' ';
   }
   return d + 'Z';
@@ -58,24 +56,33 @@ for (let col = -4; col <= 4; col++) {
   for (let row = -4; row <= 4; row++) {
     const x = cx + col * hStep;
     const y = cy + row * vStep + (col % 2 !== 0 ? vStep / 2 : 0);
-    if (((x - cx) / (rx + hexR)) ** 2 + ((y - cy) / (ry + hexR)) ** 2 <= 1) {
-      cells.push([x, y]);
-    }
+    if (((x - cx) / (rx + hexR)) ** 2 + ((y - cy) / (ry + hexR)) ** 2 <= 1) cells.push([x, y]);
   }
 }
 const scutes = cells.map(([x, y]) => hexPath(x, y, hexR)).join('');
 
-// --- rounded bullet head (domed top, softly rounded base) ---
+// rounded, elongated bullet head
 const hTop = 26, hBot = 58, hL = 89, hR = 111, topR = 11, botR = 7;
 const head = `M ${hL} ${hTop + topR} A ${topR} ${topR} 0 0 1 ${hR} ${hTop + topR} L ${hR} ${hBot - botR} A ${botR} ${botR} 0 0 1 ${hR - botR} ${hBot} L ${hL + botR} ${hBot} A ${botR} ${botR} 0 0 1 ${hL} ${hBot - botR} Z`;
 
-// --- limbs (soft ovals) at the diagonals + tail nub ---
+// short, pointed, triangular tail — centred on the vertical axis
+const tail = `${cx - 7},${cy + ry - 4} ${cx + 7},${cy + ry - 4} ${cx},${cy + ry + 13}`;
+
+// limbs (soft ovals) at the diagonals
 const limbs = [-52, -128, 52, 128].map((deg) => {
   const a = (deg * Math.PI) / 180;
   return { x: +(cx + rx * Math.cos(a)).toFixed(1), y: +(cy + ry * Math.sin(a)).toFixed(1) };
 });
+
+const a11y = interactive
+  ? { role: 'button', tabindex: '0', 'aria-label': label }
+  : { 'aria-hidden': 'true' };
 ---
-<span class={`kobe ${cls}`} style={`--kobe-size:${size}`} aria-hidden="true">
+<span
+  class={`kobe ${interactive ? 'kobe--interactive' : ''} ${cls}`.trim()}
+  style={`--kobe-size:${size}`}
+  {...a11y}
+>
   {halo && <span class="kobe__halo"></span>}
   <svg viewBox="0 0 200 200" role="img" aria-label="Kobe, la tartaruga di Pole²" width="100%" height="100%">
     <defs>
@@ -84,23 +91,29 @@ const limbs = [-52, -128, 52, 128].map((deg) => {
         <stop offset="0%" stop-color="#f6f1e7" stop-opacity="0.22"></stop>
         <stop offset="100%" stop-color="#f6f1e7" stop-opacity="0"></stop>
       </radialGradient>
+      <radialGradient id="kobeFlash" cx="50%" cy="46%" r="56%">
+        <stop offset="0%" stop-color="#fbf6ea" stop-opacity="0.9"></stop>
+        <stop offset="60%" stop-color="#e0a83d" stop-opacity="0.3"></stop>
+        <stop offset="100%" stop-color="#e0a83d" stop-opacity="0"></stop>
+      </radialGradient>
     </defs>
 
-    <!-- limbs (rebalance the opposite way) — under the shell -->
+    <!-- limbs rebalance the opposite way — under the shell -->
     <g class="kobe-limbs">
       {limbs.map((l) => <ellipse cx={l.x} cy={l.y} rx="9" ry="11" fill={body}></ellipse>)}
     </g>
-    <!-- head + tail rotate together around the shell centre — under the shell -->
+    <!-- head + pointed tail rotate together around the shell centre — under the shell -->
     <g class="kobe-spine">
-      <ellipse cx={cx} cy={cy + ry} rx="6.5" ry="9" fill={body}></ellipse>
+      <polygon points={tail} fill={body}></polygon>
       <path d={head} fill={body}></path>
     </g>
 
-    <!-- shell: the FIXED pivot — elliptical dome + tessellated scutes + satin + rim -->
+    <!-- shell: the FIXED pivot — dome + tessellated scutes + satin + (flash) + rim -->
     <ellipse cx={cx} cy={cy} rx={rx} ry={ry} fill={shell}></ellipse>
     <g clip-path="url(#kobeShell)">
       <path d={scutes} fill="none" stroke={line} stroke-width="1.6"></path>
       <ellipse cx={cx} cy={cy} rx={rx} ry={ry} fill="url(#kobeSatin)"></ellipse>
+      <ellipse class="kobe__flash" cx={cx} cy={cy} rx={rx} ry={ry} fill="url(#kobeFlash)"></ellipse>
     </g>
     <ellipse cx={cx} cy={cy} rx={rx} ry={ry} fill="none" stroke={body} stroke-width="3.2"></ellipse>
   </svg>
@@ -114,8 +127,15 @@ const limbs = [-52, -128, 52, 128].map((deg) => {
     height: var(--kobe-size);
     max-width: 100%;
   }
-  /* A very soft warm halo — helps Kobe emerge from the petrol hero without any
-     outline, spotlight or shadow. Optional (hero only). */
+  .kobe--interactive {
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .kobe--interactive:focus-visible {
+    outline: 2px solid #e0a83d;
+    outline-offset: 6px;
+    border-radius: 50%;
+  }
   .kobe__halo {
     position: absolute;
     inset: -26%;
@@ -134,21 +154,21 @@ const limbs = [-52, -128, 52, 128].map((deg) => {
     display: block;
   }
 
-  /* Idle posture adjustment. The shell stays still; the body rebalances around
-     the shell centre. Rotation only — no translate/scale/bounce/loop. Played
-     once per idle period by the script below (adds `.playing`). */
+  /* The shell is the fixed pivot; the body rebalances around the shell centre.
+     Rotation only — no translate/scale/bounce/loop. */
   .kobe-spine,
   .kobe-limbs {
     transform-box: view-box;
     transform-origin: 100px 104px;
   }
-  .kobe.playing .kobe-spine {
+
+  /* Idle: a small posture adjustment (played by the script). */
+  .kobe.playing-idle .kobe-spine {
     animation: kobeSpine 840ms ease-in-out both;
   }
-  .kobe.playing .kobe-limbs {
+  .kobe.playing-idle .kobe-limbs {
     animation: kobeLimbs 840ms ease-in-out both;
   }
-  /* rest → side A → (hold) → through to side B → (hold) → settle to rest */
   @keyframes kobeSpine {
     0%, 100% { transform: rotate(0deg); }
     28%, 42% { transform: rotate(3.6deg); }
@@ -159,55 +179,112 @@ const limbs = [-52, -128, 52, 128].map((deg) => {
     28%, 42% { transform: rotate(-2.1deg); }
     72%, 86% { transform: rotate(2.1deg); }
   }
+
+  /* Reaction (click/tap): larger, clearly visible — "gently disturbed". Head+tail
+     swing to one side, limbs the opposite way, a brief reverse, then settle. */
+  .kobe.reacting .kobe-spine {
+    animation: kobeReactSpine 780ms ease-in-out both;
+  }
+  .kobe.reacting .kobe-limbs {
+    animation: kobeReactLimbs 780ms ease-in-out both;
+  }
+  @keyframes kobeReactSpine {
+    0%, 100% { transform: rotate(0deg); }
+    35% { transform: rotate(8.5deg); }
+    70% { transform: rotate(-4.5deg); }
+  }
+  @keyframes kobeReactLimbs {
+    0%, 100% { transform: rotate(0deg); }
+    35% { transform: rotate(-5deg); }
+    70% { transform: rotate(2.7deg); }
+  }
+
+  /* Reduce Motion: no rotation. The reaction becomes a brief, subtle shell
+     highlight; the idle cue does not run. */
+  .kobe__flash {
+    opacity: 0;
+  }
+  @keyframes kobeFlash {
+    0% { opacity: 0; }
+    40% { opacity: 0.32; }
+    100% { opacity: 0; }
+  }
   @media (prefers-reduced-motion: reduce) {
     .kobe-spine,
     .kobe-limbs {
       animation: none !important;
       transform: none !important;
     }
+    .kobe.reacting .kobe__flash {
+      animation: kobeFlash 420ms ease-out;
+    }
   }
 </style>
 
 <script>
-  // Canonical idle: one calm posture adjustment after ~25–50s of inactivity.
-  // Rotation only; pauses on hidden tab; never runs under Reduce Motion.
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const DURATION = 900; // a touch longer than the animation, to clear the class
+  const IDLE_MS = 900;
+  const REACT_MS = 820;
+
   document.querySelectorAll<HTMLElement>('.kobe').forEach((kobe) => {
-    if (reduce) return;
-    let timer: number | undefined;
+    let idleTimer: number | undefined;
+    let reacting = false;
 
-    const schedule = () => {
-      window.clearTimeout(timer);
-      if (document.hidden) return;
-      timer = window.setTimeout(play, 25000 + Math.random() * 25000);
+    const scheduleIdle = () => {
+      window.clearTimeout(idleTimer);
+      if (reduce || document.hidden || reacting) return;
+      idleTimer = window.setTimeout(playIdle, 25000 + Math.random() * 25000);
     };
-    const play = () => {
-      if (document.hidden) return schedule();
-      kobe.classList.add('playing');
+    const playIdle = () => {
+      if (reduce || document.hidden || reacting) return scheduleIdle();
+      kobe.classList.add('playing-idle');
       window.setTimeout(() => {
-        kobe.classList.remove('playing');
-        schedule();
-      }, DURATION);
+        kobe.classList.remove('playing-idle');
+        scheduleIdle();
+      }, IDLE_MS);
     };
 
-    // Reset the idle window on real activity (throttled), so it only stirs when
-    // things are actually calm. Never interrupts a movement in progress.
+    // Reaction: ignore further input until the current one finishes (no stacking).
+    const react = () => {
+      if (reacting) return;
+      reacting = true;
+      window.clearTimeout(idleTimer); // stop the passive idle cue while reacting
+      kobe.classList.remove('playing-idle');
+      kobe.classList.add('reacting');
+      window.setTimeout(() => {
+        kobe.classList.remove('reacting');
+        reacting = false;
+        scheduleIdle();
+      }, REACT_MS);
+    };
+
+    if (kobe.classList.contains('kobe--interactive')) {
+      kobe.addEventListener('click', react);
+      kobe.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault(); // Space must not scroll the page
+          react();
+        }
+      });
+    }
+
+    // Reset the idle window on genuine activity (throttled), so it only stirs
+    // when things are calm. Never interrupts a movement in progress.
     let last = 0;
     const onActivity = () => {
       const now = Date.now();
       if (now - last < 1500) return;
       last = now;
-      if (!kobe.classList.contains('playing')) schedule();
+      if (!reacting && !kobe.classList.contains('playing-idle')) scheduleIdle();
     };
     for (const ev of ['pointerdown', 'keydown', 'scroll', 'pointermove']) {
       window.addEventListener(ev, onActivity, { passive: true });
     }
     document.addEventListener('visibilitychange', () => {
-      if (document.hidden) window.clearTimeout(timer);
-      else schedule();
+      if (document.hidden) window.clearTimeout(idleTimer);
+      else scheduleIdle();
     });
 
-    schedule();
+    scheduleIdle();
   });
 </script>

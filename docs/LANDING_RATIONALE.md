@@ -202,7 +202,9 @@ A focused polish milestone, no structural change. The turtle was brought to a
   edge. (Corrected from the first M14 pass, which stopped at a lone 7-cell
   "flower"; see the geometry study.) Distinct from the free-cell `HexTexture`.
 - **Rounded bullet head** (domed top, softly rounded base) — not a circle.
-- Four soft diagonal limbs + a **rounded tail nub** — not a triangle.
+- Four soft diagonal limbs; the **tail is a short pointed triangle** centred on
+  the vertical axis (the only pointed element; head stays rounded). *(Corrected
+  from the interim rounded nub.)*
 - **Figure-ground separation** (Kobe was blending into the petrol hero): a **soft
   warm halo** behind Kobe, a **satin sheen** on the shell, and a darker body tone
   so limbs read against both the light and dark ends of the hero gradient. No
@@ -216,6 +218,15 @@ A focused polish milestone, no structural change. The turtle was brought to a
   inactive tab**, and is **off under Reduce Motion**. (Supersedes the earlier
   shimmer exploration; the static satin sheen stays as depth, not motion.) Spec:
   `BRAND_BIBLE.md §13a` — reused across Flutter/website/marketing.
+- **Click/tap reaction (interactive Kobe).** The idle cue is too subtle to notice
+  on the web, so the hero Kobe is interactive: a direct click/tap/keyboard press
+  plays a **clearly-visible** version of the same gesture — head+tail **8.5°** one
+  way, limbs **−5°** the opposite way, a brief reverse (**−4.5° / +2.7°**), settle
+  to rest, **780 ms**, springless ease-in-out. Reads as “gently disturbed,” never
+  frightened/angry. Works with mouse/touch/keyboard (Enter/Space); it **stops the
+  idle cue** and **ignores repeat input until done** (no stacking). Signalled by a
+  pointer cursor + `role=button` accessible label (no visible button/text). Under
+  **Reduce Motion** the rotation becomes a brief satin/gold **shell highlight**.
 
 **Cross-product discrepancy (documented, not silently allowed).** Before M14 the
 landing turtle and the Flutter app (`lib/shared/brand/turtle_mascot.dart`) shared
