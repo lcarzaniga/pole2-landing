@@ -207,10 +207,15 @@ A focused polish milestone, no structural change. The turtle was brought to a
   warm halo** behind Kobe, a **satin sheen** on the shell, and a darker body tone
   so limbs read against both the light and dark ends of the hero gradient. No
   outlines/shadows/spotlight — Kobe *emerges* rather than being highlighted.
-- **Idle presence:** the old shimmer was imperceptible. Replaced with an
-  **infrequent** (~9–14 s), clearly-visible satin shimmer, JS-driven so it
-  **pauses on inactive tab** and is **off under Reduce Motion**. One-shot, never
-  continuous — presence, not engagement.
+- **Idle presence (canonical posture adjustment).** After ~25–50 s of inactivity
+  Kobe makes one calm posture adjustment: the **shell stays fixed** while head+tail
+  rotate a few degrees to one side and the four limbs rotate the opposite way
+  around the shell centre, a brief pause, a sway to the other side, then a smooth
+  return to rest (~840 ms, ease-in-out). **Rotation only** — no
+  translate/scale/bounce/loop. JS-driven so it resets on activity, **pauses on an
+  inactive tab**, and is **off under Reduce Motion**. (Supersedes the earlier
+  shimmer exploration; the static satin sheen stays as depth, not motion.) Spec:
+  `BRAND_BIBLE.md §13a` — reused across Flutter/website/marketing.
 
 **Cross-product discrepancy (documented, not silently allowed).** Before M14 the
 landing turtle and the Flutter app (`lib/shared/brand/turtle_mascot.dart`) shared

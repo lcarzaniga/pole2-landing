@@ -7,12 +7,17 @@
 //  - the shell is an ELLIPSE, horizontal/vertical axis ratio = 0.90 (taller than wide)
 //  - it is FULLY TESSELLATED with one regular hex grid, centred on a cell, and
 //    the tessellation is CLIPPED by the ellipse (outer cells are naturally cut)
-//  - the grid is arranged so the canonical core — 1 central + 6 surrounding
-//    complete hexagons — is always present and recognizable at the centre;
-//    additional cells continue outward to the clipped edge.
-//  - (this is distinct from the decorative background honeycomb, which may have
-//    many faint cells; here the cells ARE the shell's structure)
+//  - the canonical core — 1 central + 6 surrounding complete hexagons — is always
+//    present and recognizable at the centre; additional cells continue to the edge
 //  - head is a rounded BULLET; four soft diagonal limbs; a small rounded tail nub
+//
+// Idle behaviour (canonical — see BRAND_BIBLE "Kobe idle animation"):
+//  - after ~25–50s of inactivity, ONE calm posture adjustment
+//  - the SHELL is the fixed pivot; head+tail rotate a few degrees to one side and
+//    the four limbs rotate slightly the opposite way, brief pause, sway to the
+//    other side, then settle back to rest (~840ms, ease-in-out)
+//  - rotation only — never translate/scale/bounce/loop; pauses on hidden tab;
+//    off under Reduce Motion.
 interface Props {
   size?: string;
   halo?: boolean;
@@ -53,7 +58,6 @@ for (let col = -4; col <= 4; col++) {
   for (let row = -4; row <= 4; row++) {
     const x = cx + col * hStep;
     const y = cy + row * vStep + (col % 2 !== 0 ? vStep / 2 : 0);
-    // keep any cell whose body can intersect the shell; the ellipse clip cuts them
     if (((x - cx) / (rx + hexR)) ** 2 + ((y - cy) / (ry + hexR)) ** 2 <= 1) {
       cells.push([x, y]);
     }
@@ -62,7 +66,7 @@ for (let col = -4; col <= 4; col++) {
 const scutes = cells.map(([x, y]) => hexPath(x, y, hexR)).join('');
 
 // --- rounded bullet head (domed top, softly rounded base) ---
-const hTop = 26, hBot = 56, hL = 89, hR = 111, topR = 11, botR = 7;
+const hTop = 26, hBot = 58, hL = 89, hR = 111, topR = 11, botR = 7;
 const head = `M ${hL} ${hTop + topR} A ${topR} ${topR} 0 0 1 ${hR} ${hTop + topR} L ${hR} ${hBot - botR} A ${botR} ${botR} 0 0 1 ${hR - botR} ${hBot} L ${hL + botR} ${hBot} A ${botR} ${botR} 0 0 1 ${hL} ${hBot - botR} Z`;
 
 // --- limbs (soft ovals) at the diagonals + tail nub ---
@@ -80,24 +84,23 @@ const limbs = [-52, -128, 52, 128].map((deg) => {
         <stop offset="0%" stop-color="#f6f1e7" stop-opacity="0.22"></stop>
         <stop offset="100%" stop-color="#f6f1e7" stop-opacity="0"></stop>
       </radialGradient>
-      <radialGradient id="kobeSheen" cx="50%" cy="50%" r="50%">
-        <stop offset="0%" stop-color="#fbf6ea" stop-opacity="0.95"></stop>
-        <stop offset="55%" stop-color="#e0a83d" stop-opacity="0.35"></stop>
-        <stop offset="100%" stop-color="#e0a83d" stop-opacity="0"></stop>
-      </radialGradient>
     </defs>
 
-    <!-- limbs / tail / head, under the shell -->
-    {limbs.map((l) => <ellipse cx={l.x} cy={l.y} rx="9" ry="11" fill={body}></ellipse>)}
-    <ellipse cx={cx} cy={cy + ry} rx="6.5" ry="9" fill={body}></ellipse>
-    <path d={head} fill={body}></path>
+    <!-- limbs (rebalance the opposite way) — under the shell -->
+    <g class="kobe-limbs">
+      {limbs.map((l) => <ellipse cx={l.x} cy={l.y} rx="9" ry="11" fill={body}></ellipse>)}
+    </g>
+    <!-- head + tail rotate together around the shell centre — under the shell -->
+    <g class="kobe-spine">
+      <ellipse cx={cx} cy={cy + ry} rx="6.5" ry="9" fill={body}></ellipse>
+      <path d={head} fill={body}></path>
+    </g>
 
-    <!-- shell: elliptical dome + tessellated scutes (clipped) + satin sheen + rim -->
+    <!-- shell: the FIXED pivot — elliptical dome + tessellated scutes + satin + rim -->
     <ellipse cx={cx} cy={cy} rx={rx} ry={ry} fill={shell}></ellipse>
     <g clip-path="url(#kobeShell)">
       <path d={scutes} fill="none" stroke={line} stroke-width="1.6"></path>
       <ellipse cx={cx} cy={cy} rx={rx} ry={ry} fill="url(#kobeSatin)"></ellipse>
-      <ellipse class="kobe__shimmer" cx="78" cy="98" rx="34" ry="42" fill="url(#kobeSheen)"></ellipse>
     </g>
     <ellipse cx={cx} cy={cy} rx={rx} ry={ry} fill="none" stroke={body} stroke-width="3.2"></ellipse>
   </svg>
@@ -131,65 +134,80 @@ const limbs = [-52, -128, 52, 128].map((deg) => {
     display: block;
   }
 
-  /* Idle presence: an occasional satin shimmer sweeps the shell (~every 9–14s,
-     driven by JS so it can be infrequent, pause on hidden tab, and stay off
-     under Reduce Motion). One-shot, never continuous. */
-  .kobe__shimmer {
-    opacity: 0;
+  /* Idle posture adjustment. The shell stays still; the body rebalances around
+     the shell centre. Rotation only — no translate/scale/bounce/loop. Played
+     once per idle period by the script below (adds `.playing`). */
+  .kobe-spine,
+  .kobe-limbs {
+    transform-box: view-box;
+    transform-origin: 100px 104px;
   }
-  .kobe__shimmer.play {
-    animation: kobeShimmer 1.9s ease-in-out;
+  .kobe.playing .kobe-spine {
+    animation: kobeSpine 840ms ease-in-out both;
   }
-  @keyframes kobeShimmer {
-    0% {
-      opacity: 0;
-      cx: 74px;
-    }
-    45% {
-      opacity: 0.62;
-    }
-    100% {
-      opacity: 0;
-      cx: 126px;
-    }
+  .kobe.playing .kobe-limbs {
+    animation: kobeLimbs 840ms ease-in-out both;
+  }
+  /* rest → side A → (hold) → through to side B → (hold) → settle to rest */
+  @keyframes kobeSpine {
+    0%, 100% { transform: rotate(0deg); }
+    28%, 42% { transform: rotate(3.6deg); }
+    72%, 86% { transform: rotate(-3.6deg); }
+  }
+  @keyframes kobeLimbs {
+    0%, 100% { transform: rotate(0deg); }
+    28%, 42% { transform: rotate(-2.1deg); }
+    72%, 86% { transform: rotate(2.1deg); }
   }
   @media (prefers-reduced-motion: reduce) {
-    .kobe__shimmer,
-    .kobe__shimmer.play {
-      animation: none;
-      opacity: 0;
+    .kobe-spine,
+    .kobe-limbs {
+      animation: none !important;
+      transform: none !important;
     }
   }
 </style>
 
 <script>
-  // Infrequent, presence-only idle shimmer. No continuous animation.
+  // Canonical idle: one calm posture adjustment after ~25–50s of inactivity.
+  // Rotation only; pauses on hidden tab; never runs under Reduce Motion.
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const DURATION = 900; // a touch longer than the animation, to clear the class
   document.querySelectorAll<HTMLElement>('.kobe').forEach((kobe) => {
-    const shimmer = kobe.querySelector<SVGElement>('.kobe__shimmer');
-    if (!shimmer) return;
+    if (reduce) return;
     let timer: number | undefined;
+
     const schedule = () => {
       window.clearTimeout(timer);
-      if (reduce || document.hidden) return;
-      timer = window.setTimeout(play, 9000 + Math.random() * 5000);
+      if (document.hidden) return;
+      timer = window.setTimeout(play, 25000 + Math.random() * 25000);
     };
     const play = () => {
-      if (reduce || document.hidden) return schedule();
-      shimmer.classList.add('play');
-    };
-    shimmer.addEventListener('animationend', () => {
-      shimmer.classList.remove('play');
-      schedule();
-    });
-    document.addEventListener('visibilitychange', () => {
-      if (document.hidden) {
-        window.clearTimeout(timer);
-        shimmer.classList.remove('play');
-      } else {
+      if (document.hidden) return schedule();
+      kobe.classList.add('playing');
+      window.setTimeout(() => {
+        kobe.classList.remove('playing');
         schedule();
-      }
+      }, DURATION);
+    };
+
+    // Reset the idle window on real activity (throttled), so it only stirs when
+    // things are actually calm. Never interrupts a movement in progress.
+    let last = 0;
+    const onActivity = () => {
+      const now = Date.now();
+      if (now - last < 1500) return;
+      last = now;
+      if (!kobe.classList.contains('playing')) schedule();
+    };
+    for (const ev of ['pointerdown', 'keydown', 'scroll', 'pointermove']) {
+      window.addEventListener(ev, onActivity, { passive: true });
+    }
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) window.clearTimeout(timer);
+      else schedule();
     });
+
     schedule();
   });
 </script>
