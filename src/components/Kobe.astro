@@ -134,6 +134,7 @@ const dataAttrs = {
          box are not clickable, so the reaction only fires on the shell. -->
     {interactive && <ellipse class="kobe-hit" cx={cx} cy={cy} rx={rx} ry={ry} fill="transparent"></ellipse>}
   </svg>
+  {debug && <span class="kobe-debug" aria-hidden="true">debug…</span>}
 </span>
 
 <style>
@@ -159,6 +160,31 @@ const dataAttrs = {
     outline: 2px solid #e0a83d;
     outline-offset: 6px;
     border-radius: 50%;
+  }
+
+  /* --- Debug mode (dev only; enabled by the `debug` prop) --------------- */
+  /* Make the real shell hit target visible, to confirm it matches the shell. */
+  .kobe[data-debug] .kobe-hit {
+    fill: rgba(224, 168, 61, 0.1);
+    stroke: #e0a83d;
+    stroke-width: 1.4;
+    stroke-dasharray: 4 3;
+  }
+  .kobe-debug {
+    position: absolute;
+    left: 50%;
+    top: 100%;
+    transform: translateX(-50%);
+    margin-top: 10px;
+    z-index: 3;
+    pointer-events: none;
+    font: 12px/1.4 ui-monospace, monospace;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 6px 9px;
+    border-radius: 6px;
+    white-space: nowrap;
+    text-align: center;
   }
   .kobe__halo {
     position: absolute;
@@ -195,13 +221,13 @@ const dataAttrs = {
   }
   @keyframes kobeSpine {
     0%, 100% { transform: rotate(0deg); }
-    28%, 42% { transform: rotate(3.6deg); }
-    72%, 86% { transform: rotate(-3.6deg); }
+    28%, 42% { transform: rotate(6deg); }
+    72%, 86% { transform: rotate(-6deg); }
   }
   @keyframes kobeLimbs {
     0%, 100% { transform: rotate(0deg); }
-    28%, 42% { transform: rotate(-2.1deg); }
-    72%, 86% { transform: rotate(2.1deg); }
+    28%, 42% { transform: rotate(-4deg); }
+    72%, 86% { transform: rotate(4deg); }
   }
 
   /* Reaction (click/tap): larger, clearly visible — "gently disturbed". Head+tail
@@ -214,13 +240,13 @@ const dataAttrs = {
   }
   @keyframes kobeReactSpine {
     0%, 100% { transform: rotate(0deg); }
-    35% { transform: rotate(8.5deg); }
-    70% { transform: rotate(-4.5deg); }
+    35% { transform: rotate(11deg); }
+    70% { transform: rotate(-7deg); }
   }
   @keyframes kobeReactLimbs {
     0%, 100% { transform: rotate(0deg); }
-    35% { transform: rotate(-5deg); }
-    70% { transform: rotate(2.7deg); }
+    35% { transform: rotate(-7deg); }
+    70% { transform: rotate(4.5deg); }
   }
 
   /* Reduce Motion: no rotation. The reaction becomes a brief, subtle shell
@@ -256,6 +282,12 @@ const dataAttrs = {
     const idleSpan = kobe.dataset.idleSpan !== undefined ? Number(kobe.dataset.idleSpan) : 25000;
     const debug = kobe.dataset.debug !== undefined;
     const log = (...a: unknown[]) => debug && console.log('[kobe]', ...a);
+    const dbg = kobe.querySelector('.kobe-debug');
+    const rm = () => (reduce ? 'REDUCE-MOTION ON — rotation suppressed' : 'reduce-motion off');
+    const setDbg = (s: string) => {
+      if (dbg) dbg.textContent = `${rm()} · ${s}`;
+    };
+    setDbg('init');
 
     // Exactly one idle timer at a time.
     let idleTimer: number | undefined;
@@ -271,11 +303,13 @@ const dataAttrs = {
       const delay = idleMin + Math.random() * idleSpan;
       idleTimer = window.setTimeout(playIdle, delay);
       log('idle scheduled in', Math.round(delay), 'ms');
+      setDbg(`idle scheduled in ${(delay / 1000).toFixed(1)}s`);
     };
     const playIdle = () => {
       idleTimer = undefined;
       if (reduce || document.hidden || reacting) return scheduleIdle();
       log('idle play');
+      setDbg('idle ▶ playing');
       kobe.classList.add('playing-idle');
       window.setTimeout(() => {
         kobe.classList.remove('playing-idle');
@@ -292,6 +326,7 @@ const dataAttrs = {
       clearIdle();
       kobe.classList.remove('playing-idle');
       log('reaction');
+      setDbg('shell click ✓ → reacting');
       kobe.classList.add('reacting');
       window.setTimeout(() => {
         kobe.classList.remove('reacting');
@@ -320,6 +355,7 @@ const dataAttrs = {
       if (document.hidden) {
         clearIdle();
         log('hidden: timer suspended');
+        setDbg('tab hidden — timer suspended');
       } else {
         log('visible: reschedule');
         scheduleIdle();
