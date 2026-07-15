@@ -46,7 +46,14 @@ Static output → any host. On **Cloudflare Pages**:
 1. Dashboard → **Workers & Pages → Create → Pages → Connect to Git**, authorize
    GitHub, pick `lcarzaniga/pole2-landing`.
 2. Build settings — Framework preset **Astro**, Build command `npm run build`,
-   Output directory `dist`. (Node 20 is pinned via `.node-version`.)
+   Output directory `dist`. (Node **22** is pinned via `.node-version` — required
+   by Cloudflare's Workers deploy tool `wrangler`.)
+
+> This is a pure static site, so **Pages** (above) is the simplest fit — no
+> adapter, no `wrangler`. Cloudflare's newer **Workers** import flow also works:
+> it auto-applies the `@astrojs/cloudflare` adapter and deploys via
+> `wrangler versions upload`, which needs Node ≥ 22 (hence the pin). The
+> SESSION-KV / sharp warnings in that flow are harmless for a static site.
 3. **Save and Deploy** → a `*.pages.dev` URL builds in ~1 min. Every push to
    `master` redeploys.
 4. Custom domain: project → **Custom domains → Set up a domain** → `pole2.it`
