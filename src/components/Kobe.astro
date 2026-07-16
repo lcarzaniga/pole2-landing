@@ -49,9 +49,10 @@ const {
   debug = false,
 } = Astro.props;
 
-// ---- Approved geometry (do not alter proportions) --------------------------
-const cx = 100, cy = 104, rx = 57, ry = 66; // vertical ellipse, 57/66 ≈ 0.86
-const R = 0.64 * rx; // central hexagon: as-large-as-possible circumradius
+// ---- Geometry (k12 construction, refined proportions) ----------------------
+const cx = 100, cy = 104, sc = 0.9; // shell uniformly scaled to 90%
+const rx = +(57 * sc).toFixed(3), ry = +(66 * sc).toFixed(3); // vertical ellipse (0.86)
+const R = 0.70 * rx; // central hexagon, enlarged to 0.70 of the shell width
 const DEG = Math.PI / 180;
 const f = (n: number) => n.toFixed(2);
 const angs = [0, 60, 120, 180, 240, 300];
@@ -74,7 +75,7 @@ const grooves: [[number, number], [number, number]][] = angs.map((a) => [
 
 // tapered grout band (filled trapezoid centred on a joint): narrower at the
 // centre (hIn), imperceptibly wider at the rim (hOut)
-const dIn = 1.0, dOut = 1.3, lIn = 0.5, lOut = 0.78;
+const dIn = 1.0 * sc, dOut = 1.3 * sc, lIn = 0.5 * sc, lOut = 0.78 * sc; // scaled with the shell
 function band(Pi: [number, number], Po: [number, number], hIn: number, hOut: number): string {
   const dx = Po[0] - Pi[0], dy = Po[1] - Pi[1], L = Math.hypot(dx, dy) || 1, px = -dy / L, py = dx / L;
   return `M ${f(Pi[0] + px * hIn)} ${f(Pi[1] + py * hIn)} L ${f(Po[0] + px * hOut)} ${f(Po[1] + py * hOut)} L ${f(Po[0] - px * hOut)} ${f(Po[1] - py * hOut)} L ${f(Pi[0] - px * hIn)} ${f(Pi[1] - py * hIn)} Z`;
@@ -82,24 +83,26 @@ function band(Pi: [number, number], Po: [number, number], hIn: number, hOut: num
 const darkBands = grooves.map(([a, b]) => band(a, b, dIn, dOut)).join(' ');
 const lightBands = grooves.map(([a, b]) => band(a, b, lIn, lOut)).join(' ');
 const hex = 'M ' + angs.map((a, i) => `${i ? 'L ' : ''}${f(V[a][0])} ${f(V[a][1])}`).join(' ') + ' Z';
-const BW = 3.2, BIW = 1.4; // border grout (same principle as the joints)
+const BW = 3.2 * sc, BIW = 1.4 * sc; // border grout (same principle as the joints)
 
 // ---- Body forms (separate dark groups) -------------------------------------
-function headPath(hx: number, yBase: number): string {
-  const nose = 10, neck = 6, H = 33;
-  const yN = yBase - H, nc = yN + nose, bh = neck * 2.0, yB = yBase + 6, yk = yBase - 6;
+// head enlarged (s ≈ 1.4) so it reads clearly as the head, still a calm teardrop
+function headPath(hx: number, yBase: number, s: number): string {
+  const nose = 10 * s, neck = 6 * s, H = 33 * s;
+  const yN = yBase - H, nc = yN + nose, bh = neck * 2.0, yB = yBase + 6, yk = yBase - 6 * s;
   return `M ${hx - nose} ${nc} A ${nose} ${nose} 0 0 1 ${hx + nose} ${nc} C ${hx + nose} ${f(nc + H * 0.5)} ${hx + neck} ${f(yk - 4)} ${hx + neck} ${yk} C ${hx + neck} ${f(yk + 7)} ${hx + bh} ${f(yB - 6)} ${hx + bh} ${yB} L ${hx - bh} ${yB} C ${hx - bh} ${f(yB - 6)} ${hx - neck} ${f(yk + 7)} ${hx - neck} ${yk} C ${hx - neck} ${f(yk - 4)} ${hx - nose} ${f(nc + H * 0.5)} ${hx - nose} ${nc} Z`;
 }
-const head = headPath(cx, cy - ry + 10);
+const head = headPath(cx, cy - ry + 13, 1.4);
 const legShape = 'M -7 -9 Q -12 -10 -13 -3 Q -14 3 -10 8 Q -5 12 4 11 Q 13 10 15 2 Q 16 -6 9 -9 Q 1 -12 -7 -9 Z';
 const leg = (x: number, y: number, rot: number) => `translate(${f(x)} ${f(y)}) rotate(${rot}) scale(1.05)`;
+// front legs pulled up toward the head; rear legs pulled down toward the tail (same size)
 const frontLegs = [
-  leg(cx - rx * 0.92, cy - ry * 0.42, 214),
-  leg(cx + rx * 0.92, cy - ry * 0.42, -34),
+  leg(cx - rx * 0.86, cy - ry * 0.58, 208),
+  leg(cx + rx * 0.86, cy - ry * 0.58, -28),
 ];
 const rearLegs = [
-  leg(cx - rx * 0.90, cy + ry * 0.52, 150),
-  leg(cx + rx * 0.90, cy + ry * 0.52, 30),
+  leg(cx - rx * 0.86, cy + ry * 0.66, 150),
+  leg(cx + rx * 0.86, cy + ry * 0.66, 30),
 ];
 const tail = `M ${cx - 5.5} ${f(cy + ry - 3)} Q ${cx} ${f(cy + ry + 2)} ${cx + 5.5} ${f(cy + ry - 3)} L ${cx} ${f(cy + ry + 15)} Z`;
 
