@@ -11,7 +11,8 @@
 //  · plates are NEVER filled separately — the surface is one colour; separation
 //    comes only from the GROUT joint: dark edge · light groove · dark edge
 //    (a wide dark band with a narrow light band centred on it). The outer border
-//    uses the same physical-edge construction;
+//    is one thick dark ellipse — the frame that defines Kobe (hierarchy:
+//    border > grout > body);
 //  · grooves widen imperceptibly toward the rim (subtle dome cue).
 //
 // BODY (secondary, separate dark forms attached under the shell): elongated
@@ -40,7 +41,7 @@ const {
   halo = false,
   interactive = false,
   label = 'Kobe, la tartaruga di Pole²',
-  shell = '#cfe8db',
+  shell = '#bfdacd',
   body = '#1f4638',
   grout = '#e7f4ee',
   class: cls = '',
@@ -83,7 +84,7 @@ function band(Pi: [number, number], Po: [number, number], hIn: number, hOut: num
 const darkBands = grooves.map(([a, b]) => band(a, b, dIn, dOut)).join(' ');
 const lightBands = grooves.map(([a, b]) => band(a, b, lIn, lOut)).join(' ');
 const hex = 'M ' + angs.map((a, i) => `${i ? 'L ' : ''}${f(V[a][0])} ${f(V[a][1])}`).join(' ') + ' Z';
-const BW = 3.2 * sc, BIW = 1.4 * sc; // border grout (same principle as the joints)
+const BW = 6.8 * sc; // single thick dark rim — the frame that defines Kobe (~2× the grout)
 
 // ---- Body forms (separate dark groups) -------------------------------------
 // head enlarged (s ≈ 1.4) so it reads clearly as the head, still a calm teardrop
@@ -97,12 +98,12 @@ const legShape = 'M -7 -9 Q -12 -10 -13 -3 Q -14 3 -10 8 Q -5 12 4 11 Q 13 10 15
 const leg = (x: number, y: number, rot: number) => `translate(${f(x)} ${f(y)}) rotate(${rot}) scale(1.05)`;
 // front legs pulled up toward the head; rear legs pulled down toward the tail (same size)
 const frontLegs = [
-  leg(cx - rx * 0.86, cy - ry * 0.58, 208),
-  leg(cx + rx * 0.86, cy - ry * 0.58, -28),
+  leg(cx - rx * 0.86, cy - ry * 0.56, 208),
+  leg(cx + rx * 0.86, cy - ry * 0.56, -28),
 ];
 const rearLegs = [
-  leg(cx - rx * 0.86, cy + ry * 0.66, 150),
-  leg(cx + rx * 0.86, cy + ry * 0.66, 30),
+  leg(cx - rx * 0.86, cy + ry * 0.64, 150),
+  leg(cx + rx * 0.86, cy + ry * 0.64, 30),
 ];
 const tail = `M ${cx - 5.5} ${f(cy + ry - 3)} Q ${cx} ${f(cy + ry + 2)} ${cx + 5.5} ${f(cy + ry - 3)} L ${cx} ${f(cy + ry + 15)} Z`;
 
@@ -158,11 +159,9 @@ const dataAttrs = {
       <path d={hex} fill="none" stroke={grout} stroke-width={2 * lIn} stroke-linejoin="round"></path>
       <ellipse class="kobe__flash" cx={cx} cy={cy} rx={rx} ry={ry} fill="url(#kobeFlash)"></ellipse>
     </g>
-    <!-- outer border, same physical-edge construction (dark · light · dark) -->
-    <g fill="none" stroke-linejoin="round">
-      <ellipse cx={cx} cy={cy} rx={rx} ry={ry} stroke={body} stroke-width={BW}></ellipse>
-      <ellipse cx={cx} cy={cy} rx={rx} ry={ry} stroke={grout} stroke-width={BIW}></ellipse>
-    </g>
+    <!-- outer border — one confident thick dark ellipse (the frame that defines
+         Kobe); internal grout stays thin so the hierarchy is border > grout > body -->
+    <ellipse cx={cx} cy={cy} rx={rx} ry={ry} fill="none" stroke={body} stroke-width={BW}></ellipse>
 
     <!-- Interactive hit target = the SHELL only. -->
     {interactive && <ellipse class="kobe-hit" cx={cx} cy={cy} rx={rx} ry={ry} fill="transparent"></ellipse>}
