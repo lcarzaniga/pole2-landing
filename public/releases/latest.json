@@ -1,8 +1,8 @@
 {
-  "versionName": "1.0.2",
-  "versionCode": 2007,
-  "apkUrl": "https://github.com/lcarzaniga/pole2-app/releases/download/v1.0.2-vc2007/pole2-android-1.0.2-vc2007.apk",
-  "sha256": "dccadc4cec59b1a3b88ef337abcfe38842a08a786f13d404543491cd6743cf40",
-  "notes": ["Il nuovo oggetto si apre subito", "Note e azioni rapide nel dettaglio", "Ricerca, ordinamento e filtri", "Kobe più grande"],
+  "versionName": "1.0.3",
+  "versionCode": 2008,
+  "apkUrl": "https://github.com/lcarzaniga/pole2-app/releases/download/1.0.3-vc2008/pole2-android-1.0.3-vc2008.apk",
+  "sha256": "c6f04083ea168bb7bb3b7c9214e219a1d83d122cab9c6e3a6d1c3383bbe78388",
+  "notes": ["Tocca la foto per vederla a schermo intero", "Pizzica per zoomare e scorri", "Sostituisci la foto con la matita"],
   "mandatory": false
 }
