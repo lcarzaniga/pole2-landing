@@ -1,8 +1,8 @@
 {
-  "versionName": "1.0.1",
-  "versionCode": 2006,
-  "apkUrl": "https://github.com/lcarzaniga/pole2-app/releases/download/v1.0.1-vc2006/pole2-android-1.0.1-vc2006.apk",
-  "sha256": "474b7994383fab901fd48e063c55c41154919d561f5d17b29e22065e3bd900a1",
-  "notes": ["Gestione dei luoghi", "Launcher migliorato", "Correzioni"],
+  "versionName": "1.0.2",
+  "versionCode": 2007,
+  "apkUrl": "https://github.com/lcarzaniga/pole2-app/releases/download/v1.0.2-vc2007/pole2-android-1.0.2-vc2007.apk",
+  "sha256": "dccadc4cec59b1a3b88ef337abcfe38842a08a786f13d404543491cd6743cf40",
+  "notes": ["Il nuovo oggetto si apre subito", "Note e azioni rapide nel dettaglio", "Ricerca, ordinamento e filtri", "Kobe più grande"],
   "mandatory": false
 }
