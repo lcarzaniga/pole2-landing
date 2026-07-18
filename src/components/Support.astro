@@ -1,0 +1,70 @@
+---
+// Voluntary-support section (Ko-fi). A calm invitation, never a paywall:
+// contributing is optional, unlocks nothing, and grants no preferential access.
+// Implemented as a plain external link (no Ko-fi SDK/iframe/widget), so it adds
+// no scripts, no cookies and no tracking — it just opens Ko-fi in a new tab.
+import { KOFI_URL } from '../config';
+---
+
+<section class="section support" id="sostieni" aria-labelledby="support-h">
+  <div class="wrap read reveal">
+    <p class="eyebrow">Sostieni</p>
+    <h2 id="support-h">Sostieni Pole²</h2>
+    <p class="lead">
+      Pole² è gratuito durante la beta. Se ti è utile, puoi contribuire
+      volontariamente allo sviluppo e ai costi del progetto. Il contributo non è
+      necessario per utilizzare Pole² e non sblocca funzionalità.
+    </p>
+
+    <div class="support__cta">
+      <a
+        class="btn btn--primary"
+        href={KOFI_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Sostieni volontariamente lo sviluppo di Pole² su Ko-fi"
+      >
+        Offri un caffè a Kobe
+      </a>
+      <p class="support__ext">Pagamento gestito esternamente da Ko-fi.</p>
+    </div>
+
+    <p class="support__note">
+      Se in futuro i costi non permetteranno di mantenere questo modello,
+      comunicheremo con trasparenza l’eventuale passaggio a una versione a
+      pagamento.
+    </p>
+
+    <p class="support__privacy">
+      Il pulsante apre Ko-fi in una nuova scheda. Il pagamento è gestito da
+      Ko-fi e dal suo fornitore di pagamento, secondo le loro condizioni e
+      informative privacy; Pole² non riceve i dati della tua carta.
+    </p>
+  </div>
+</section>
+
+<style>
+  .support__cta {
+    margin-top: 1.75rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.6rem;
+  }
+  .support__ext {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+  .support__note {
+    margin-top: 1.75rem;
+    max-width: 34rem;
+    color: var(--muted);
+  }
+  .support__privacy {
+    margin-top: 1rem;
+    max-width: 34rem;
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+</style>
