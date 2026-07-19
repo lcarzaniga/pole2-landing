@@ -1,0 +1,117 @@
+---
+import Base from '../layouts/Base.astro';
+import Footer from '../components/Footer.astro';
+import Wordmark from '../components/Wordmark.astro';
+---
+
+<Base
+  title="Guida — Pole²"
+  description="Come usare Pole²: creare cose da foto o dal nome, foto e galleria, ricerca e «Dove si trova», Luoghi, Persone e prestiti, Archivio, riordino e backup cifrato — tutto sul tuo dispositivo."
+>
+  <main id="contenuto" class="page">
+    <div class="wrap read">
+      <p class="eyebrow">Guida</p>
+      <h1><Wordmark size="1em" /> — come si usa</h1>
+      <p class="lead">
+        Pole² tiene vicine le cose a cui tieni e ciò che le accompagna. Tutto
+        resta sul tuo dispositivo. Ecco cosa puoi fare oggi.
+      </p>
+
+      <h2>Aggiungere una cosa</h2>
+      <p>
+        Tocca Kobe, la tartaruga in basso, e scegli come iniziare:
+      </p>
+      <ul>
+        <li><strong>Dalla foto</strong> — scatti o scegli una foto dalla galleria, e la nuova cosa parte già con la sua immagine.</li>
+        <li><strong>Dal nome</strong> — parti da un titolo e aggiungi il resto con calma.</li>
+      </ul>
+      <p>Serve solo un nome: niente è obbligatorio, puoi completare quando vuoi.</p>
+
+      <h2>Foto e galleria</h2>
+      <p>
+        Ogni cosa può avere più foto. La copertina è la prima immagine; le altre
+        restano nella galleria, riordinabili, e le puoi vedere a schermo intero.
+      </p>
+
+      <h2>Ricerca e «Dove si trova»</h2>
+      <p>
+        Dalla schermata principale puoi cercare per nome o categoria, ordinare, e
+        filtrare con <strong>«Dove si trova»</strong>: tutto, senza luogo, dentro
+        un Luogo, oppure in prestito a una persona.
+      </p>
+
+      <h2>Luoghi</h2>
+      <p>
+        I Luoghi sono contenitori reali e possono contenersi a vicenda (Casa ›
+        Camera › Armadio). Ogni cosa può stare in un Luogo o restare senza luogo.
+        Il filtro di un Luogo include tutto ciò che sta anche nei luoghi contenuti.
+      </p>
+
+      <h2>Persone: prestiti, restituzioni e regali</h2>
+      <p>
+        Puoi segnare una cosa come <strong>prestata</strong> a una persona, e poi
+        registrarne la <strong>restituzione</strong>. Puoi anche
+        <strong>dare</strong> una cosa a qualcuno in modo permanente, e — se un
+        giorno torna — registrarne il <strong>rientro</strong>. Nella sezione
+        <strong>Persone</strong> vedi, per ciascuno, cosa ha in prestito, cosa gli
+        hai dato e lo storico.
+      </p>
+
+      <h2>Riordina questo luogo</h2>
+      <p>
+        Dentro un Luogo puoi avviare <strong>«Riordina questo luogo»</strong>: una
+        camminata calma, una cosa alla volta, per rimettere in ordine ciò che c’è.
+      </p>
+
+      <h2>Archivio e cose rimosse</h2>
+      <p>
+        Le cose che escono dall’uso quotidiano restano consultabili in
+        <strong>Archivio</strong>: quelle messe da parte e quelle rimosse restano
+        separate. Nulla viene cancellato per sempre senza il tuo gesto.
+      </p>
+
+      <h2>Backup cifrato e ripristino</h2>
+      <p>
+        Puoi creare un <strong>backup cifrato</strong> dei tuoi dati e delle foto,
+        scegliendo tu dove salvarlo. Il <strong>ripristino</strong> sostituisce i
+        dati attuali con quelli del backup, con una copia di sicurezza durante
+        l’operazione. La password del backup la conosci solo tu: senza, il backup
+        non è leggibile.
+      </p>
+
+      <h2>Tutto sul tuo dispositivo</h2>
+      <p>
+        Pole² funziona in locale: nessun account, nessun cloud, nessuna
+        pubblicità. I tuoi dati vivono sul tuo telefono, e le condivisioni le
+        decidi tu.
+      </p>
+
+      <p class="muted">
+        Hai una domanda o un problema? Scrivici dalla pagina
+        <a href="/supporto">Supporto</a>.
+      </p>
+    </div>
+  </main>
+  <Footer />
+</Base>
+
+<style>
+  .page {
+    padding-block: clamp(3rem, 8vw, 6rem);
+  }
+  .read h1 {
+    margin: 0.3rem 0 0.6rem;
+  }
+  .read h2 {
+    margin-top: 2.2rem;
+  }
+  .read ul {
+    padding-left: 1.2rem;
+  }
+  .read li {
+    margin: 0.3rem 0;
+  }
+  .muted {
+    color: var(--muted);
+  }
+</style>

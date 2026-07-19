@@ -1,0 +1,43 @@
+---
+import Base from '../layouts/Base.astro';
+import Footer from '../components/Footer.astro';
+import SupportForm from '../components/SupportForm.astro';
+---
+
+<Base
+  title="Supporto — Pole²"
+  description="Hai una domanda, un problema o un suggerimento su Pole²? Scrivici: ti risponderemo via email. Non inviare backup, foto o dati personali."
+>
+  <main id="contenuto" class="page">
+    <div class="wrap read">
+      <p class="eyebrow">Supporto</p>
+      <h1>Come possiamo aiutarti?</h1>
+      <p class="lead">
+        Scrivici con calma. Ti risponderemo via email all’indirizzo che indichi.
+      </p>
+      <p class="warn">
+        Non inviare backup, fotografie o informazioni personali sulle cose che
+        conservi in Pole².
+      </p>
+
+      <SupportForm />
+    </div>
+  </main>
+  <Footer />
+</Base>
+
+<style>
+  .page {
+    padding-block: clamp(3rem, 8vw, 6rem);
+  }
+  .read h1 {
+    margin: 0.3rem 0 0.6rem;
+  }
+  .warn {
+    color: var(--muted);
+    background: var(--surface-alt);
+    border: 1px solid var(--hairline);
+    border-radius: 14px;
+    padding: 0.8rem 1rem;
+  }
+</style>

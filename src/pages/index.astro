@@ -5,6 +5,7 @@ import Kobe from '../components/Kobe.astro';
 import HexTexture from '../components/HexTexture.astro';
 import WaitlistForm from '../components/WaitlistForm.astro';
 import Support from '../components/Support.astro';
+import Footer from '../components/Footer.astro';
 
 const steps = [
   { title: 'Conserva', body: 'Affidi a Pole² una cosa a cui tieni. In un momento è al sicuro.' },
@@ -133,13 +134,7 @@ const privacy = ['Niente cloud.', 'Niente account.', 'Niente abbonamento.'];
   </main>
 
   <!-- ============================= FOOTER ============================= -->
-  <footer class="footer">
-    <div class="wrap footer__inner">
-      <Wordmark size="1.4rem" />
-      <p class="footer__line">Tutto resta sul tuo dispositivo.</p>
-      <p class="footer__fine">© 2026 Pole²</p>
-    </div>
-  </footer>
+  <Footer />
 </Base>
 
 <style>
@@ -318,26 +313,6 @@ const privacy = ['Niente cloud.', 'Niente account.', 'Niente abbonamento.'];
     margin-top: 1.75rem;
     color: var(--on-petrol-muted);
     font-style: italic;
-  }
-
-  /* ------------------------------- FOOTER ------------------------------- */
-  .footer {
-    border-top: 1px solid var(--hairline);
-    padding-block: 2.5rem;
-    color: var(--muted);
-  }
-  .footer__inner {
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-  }
-  .footer__line {
-    margin: 0;
-  }
-  .footer__fine {
-    margin: 0;
-    font-size: 0.85rem;
-    opacity: 0.8;
   }
 
   em {

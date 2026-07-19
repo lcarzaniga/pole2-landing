@@ -1,0 +1,111 @@
+---
+import Base from '../layouts/Base.astro';
+import Footer from '../components/Footer.astro';
+
+// A concise, human-readable changelog. Beta only — no dates or promises for
+// features that are not yet available.
+const entries = [
+  {
+    tag: 'Beta privata',
+    title: 'Persone, prestiti e «Dove si trova»',
+    body:
+      'Una sezione Persone per vedere chi ha qualcosa di tuo in prestito o in regalo, e un unico filtro «Dove si trova» sulla schermata principale: luogo o persona.',
+  },
+  {
+    tag: 'Beta privata',
+    title: 'Kobe: due modi per iniziare',
+    body:
+      'La tartaruga apre due sole scelte chiare — «Dalla foto» e «Dal nome» — perché una cosa nasce sempre allo stesso modo.',
+  },
+  {
+    tag: 'Beta privata',
+    title: 'Backup cifrato e ripristino',
+    body:
+      'Backup cifrato dei dati e delle foto, con destinazione scelta da te, e un ripristino sicuro che mantiene una copia durante l’operazione.',
+  },
+  {
+    tag: 'Beta privata',
+    title: 'Luoghi, Archivio e riordino',
+    body:
+      'Luoghi che si contengono a vicenda, un Archivio calmo per ciò che esce dall’uso, e «Riordina questo luogo» per rimettere in ordine una cosa alla volta.',
+  },
+];
+---
+
+<Base
+  title="Novità — Pole²"
+  description="Le novità di Pole² durante la beta privata: Persone e prestiti, il filtro «Dove si trova», backup cifrato, Luoghi e Archivio."
+>
+  <main id="contenuto" class="page">
+    <div class="wrap read">
+      <p class="eyebrow">Novità</p>
+      <h1>Cosa c’è di nuovo</h1>
+      <p class="lead">
+        Pole² è in <strong>beta privata</strong>: cresce con calma, un passo alla
+        volta. Qui trovi le novità già disponibili.
+      </p>
+
+      <ul class="log" role="list">
+        {
+          entries.map((e) => (
+            <li class="log__item">
+              <span class="log__tag">{e.tag}</span>
+              <h2>{e.title}</h2>
+              <p>{e.body}</p>
+            </li>
+          ))
+        }
+      </ul>
+
+      <p class="muted">
+        Vuoi essere avvisato quando Pole² sarà pronto? Lascia la tua email nella
+        <a href="/#lista">lista d’attesa</a>.
+      </p>
+    </div>
+  </main>
+  <Footer />
+</Base>
+
+<style>
+  .page {
+    padding-block: clamp(3rem, 8vw, 6rem);
+  }
+  .log {
+    list-style: none;
+    padding: 0;
+    margin: 2rem 0 0;
+    display: grid;
+    gap: 1.25rem;
+  }
+  .log__item {
+    background: var(--surface);
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+  }
+  .log__tag {
+    display: inline-block;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--petrol);
+    font-weight: 600;
+  }
+  @media (prefers-color-scheme: dark) {
+    .log__tag {
+      color: #7fd6be;
+    }
+  }
+  .log__item h2 {
+    margin: 0.5rem 0 0.4rem;
+    font-size: 1.2rem;
+  }
+  .log__item p {
+    margin: 0;
+    color: var(--muted);
+  }
+  .muted {
+    margin-top: 2rem;
+    color: var(--muted);
+  }
+</style>

@@ -1,0 +1,52 @@
+---
+import Wordmark from './Wordmark.astro';
+---
+
+<footer class="footer">
+  <div class="wrap footer__inner">
+    <Wordmark size="1.4rem" />
+    <nav class="footer__nav" aria-label="Pagine">
+      <a href="/guida">Guida</a>
+      <a href="/supporto">Supporto</a>
+      <a href="/privacy">Privacy</a>
+      <a href="/novita">Novità</a>
+    </nav>
+    <p class="footer__line">Tutto resta sul tuo dispositivo.</p>
+    <p class="footer__fine">© 2026 Pole²</p>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    border-top: 1px solid var(--hairline);
+    padding-block: 2.5rem;
+    color: var(--muted);
+  }
+  .footer__inner {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+  .footer__nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 1.25rem;
+    margin: 0.35rem 0 0.15rem;
+  }
+  .footer__nav a {
+    color: var(--muted);
+    text-decoration: none;
+  }
+  .footer__nav a:hover {
+    color: var(--ink);
+    text-decoration: underline;
+  }
+  .footer__line {
+    margin: 0;
+  }
+  .footer__fine {
+    margin: 0;
+    font-size: 0.85rem;
+    opacity: 0.8;
+  }
+</style>

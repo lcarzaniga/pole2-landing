@@ -1,0 +1,251 @@
+---
+// Support / bug-report form. POSTs (form-encoded) to /api/support, which writes
+// to D1 (source of truth) and notifies support out-of-band. Success is shown
+// ONLY after a durable 2xx. A client-generated submission id makes retries
+// idempotent. app version/build are prefilled from ?v= and ?b=.
+import Turnstile from './Turnstile.astro';
+---
+
+<form class="support-form" action="/api/support" method="post" novalidate>
+  <input type="hidden" name="submission_id" value="" />
+
+  <div class="field">
+    <label class="field__label" for="sp-email">La tua email (per risponderti)</label>
+    <input
+      id="sp-email"
+      class="field__input"
+      type="email"
+      name="email"
+      inputmode="email"
+      autocomplete="email"
+      placeholder="tu@esempio.it"
+      required
+    />
+  </div>
+
+  <div class="field">
+    <label class="field__label" for="sp-category">Argomento</label>
+    <select id="sp-category" class="field__input" name="category" required>
+      <option value="Domanda">Domanda</option>
+      <option value="Problema tecnico">Problema tecnico</option>
+      <option value="Suggerimento">Suggerimento</option>
+      <option value="Privacy e dati">Privacy e dati</option>
+      <option value="Altro">Altro</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label class="field__label" for="sp-message">Messaggio</label>
+    <textarea
+      id="sp-message"
+      class="field__input field__textarea"
+      name="message"
+      rows="7"
+      minlength="10"
+      maxlength="4000"
+      required
+      placeholder="Raccontaci con calma cosa succede."
+    ></textarea>
+    <p class="field__hint">
+      Non inviare backup, fotografie o informazioni personali sulle cose che
+      conservi in Pole².
+    </p>
+  </div>
+
+  <div class="field field--inline">
+    <div>
+      <label class="field__label" for="sp-version">Versione app (facoltativa)</label>
+      <input id="sp-version" class="field__input" type="text" name="app_version" maxlength="32" autocomplete="off" />
+    </div>
+    <div>
+      <label class="field__label" for="sp-build">Build (facoltativa)</label>
+      <input id="sp-build" class="field__input" type="text" name="app_build" maxlength="16" autocomplete="off" />
+    </div>
+  </div>
+
+  <!-- Honeypot -->
+  <div class="support-form__hp" aria-hidden="true">
+    <label>Lascia vuoto questo campo
+      <input type="text" name="company" tabindex="-1" autocomplete="off" />
+    </label>
+  </div>
+
+  <label class="support-form__consent">
+    <input type="checkbox" name="privacy" value="on" required />
+    <span>
+      Ho letto l’<a href="/privacy">informativa privacy</a> e acconsento al
+      trattamento dei dati per rispondere alla mia richiesta.
+    </span>
+  </label>
+
+  <Turnstile />
+
+  <div class="support-form__actions">
+    <button class="btn btn--primary" type="submit">Invia</button>
+  </div>
+
+  <p id="sp-status" class="support-form__status" role="status" aria-live="polite"></p>
+</form>
+
+<style>
+  .support-form {
+    margin-top: 1.5rem;
+    display: grid;
+    gap: 1.1rem;
+    max-width: 40rem;
+  }
+  .field__label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 0.4rem;
+  }
+  .field__input {
+    width: 100%;
+    font: inherit;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1.5px solid var(--hairline);
+    border-radius: 14px;
+    padding: 0.8rem 1rem;
+    transition: border-color 0.2s ease;
+  }
+  .field__input:focus {
+    border-color: var(--petrol);
+  }
+  .field__input[aria-invalid='true'] {
+    border-color: #b3452f;
+  }
+  .field__textarea {
+    resize: vertical;
+    min-height: 8rem;
+    line-height: 1.5;
+  }
+  .field__hint {
+    margin: 0.5rem 0 0;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .field--inline {
+    display: grid;
+    gap: 1rem;
+  }
+  @media (min-width: 30rem) {
+    .field--inline {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  .support-form__hp {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+  .support-form__consent {
+    display: flex;
+    gap: 0.6rem;
+    align-items: flex-start;
+    font-size: 0.95rem;
+    color: var(--muted);
+  }
+  .support-form__consent input {
+    margin-top: 0.2rem;
+    flex: 0 0 auto;
+  }
+  .support-form__status {
+    margin: 0;
+    min-height: 1.4em;
+    font-weight: 500;
+    color: var(--petrol);
+  }
+  @media (prefers-color-scheme: dark) {
+    .support-form__status {
+      color: #7fd6be;
+    }
+  }
+  .support-form.is-done .field,
+  .support-form.is-done .support-form__consent,
+  .support-form.is-done .cf-turnstile,
+  .support-form.is-done .support-form__actions {
+    display: none;
+  }
+</style>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('.support-form');
+  if (form) {
+    const email = form.querySelector<HTMLInputElement>('#sp-email')!;
+    const message = form.querySelector<HTMLTextAreaElement>('#sp-message')!;
+    const consent = form.querySelector<HTMLInputElement>('input[name="privacy"]')!;
+    const idField = form.querySelector<HTMLInputElement>('input[name="submission_id"]')!;
+    const button = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
+    const status = form.querySelector<HTMLParagraphElement>('#sp-status')!;
+    let pending = false;
+
+    const say = (m: string) => {
+      status.textContent = m;
+    };
+    const newId = () => {
+      idField.value =
+        typeof crypto !== 'undefined' && 'randomUUID' in crypto
+          ? crypto.randomUUID()
+          : String(Date.now()) + '-' + Math.random().toString(16).slice(2);
+    };
+
+    // Stable id for retries (regenerated only after a successful send).
+    newId();
+
+    // Prefill version/build from the query string (?v=&b=).
+    const q = new URLSearchParams(location.search);
+    const v = q.get('v');
+    const b = q.get('b');
+    if (v) (form.querySelector<HTMLInputElement>('#sp-version')!).value = v.slice(0, 32);
+    if (b) (form.querySelector<HTMLInputElement>('#sp-build')!).value = b.slice(0, 16);
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (pending) return;
+
+      email.setAttribute('aria-invalid', 'false');
+      message.setAttribute('aria-invalid', 'false');
+      if (!email.value || !email.checkValidity()) {
+        email.setAttribute('aria-invalid', 'true');
+        say('Controlla l’indirizzo email, con calma.');
+        email.focus();
+        return;
+      }
+      if (message.value.trim().length < 10) {
+        message.setAttribute('aria-invalid', 'true');
+        say('Scrivi qualche parola in più, così possiamo aiutarti.');
+        message.focus();
+        return;
+      }
+      if (!consent.checked) {
+        say('Serve il tuo consenso per gestire la richiesta.');
+        consent.focus();
+        return;
+      }
+
+      pending = true;
+      button.disabled = true;
+      say('Un momento…');
+      try {
+        const res = await fetch('/api/support', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams(new FormData(form) as any).toString(),
+        });
+        if (!res.ok) throw new Error(String(res.status));
+        form.classList.add('is-done');
+        say('Grazie. Abbiamo ricevuto il tuo messaggio: ti risponderemo via email.');
+        status.focus?.();
+      } catch {
+        // Keep everything the user typed; allow a retry with the same id.
+        say('Non è andato perso nulla. Riprova quando vuoi.');
+        button.disabled = false;
+      } finally {
+        pending = false;
+      }
+    });
+  }
+</script>

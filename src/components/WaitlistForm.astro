@@ -1,17 +1,13 @@
 ---
-// Waiting-list form. UI + architecture only — NO backend yet.
-//
-// To attach a provider later (Mailchimp / ConvertKit / self-hosted / Buttondown
-// …), set `endpoint` (and optionally `method`) below or via the data-* attrs.
-// The submit handler already: validates, POSTs `{ email }` as form-encoded to
-// the endpoint when present, and otherwise shows the calm confirmation locally.
-// No redesign required — only the endpoint changes.
-interface Props {
-  endpoint?: string;
-}
-const { endpoint = '' } = Astro.props;
+// Waiting-list form. Real backend: POSTs the email (form-encoded) to the
+// Cloudflare Pages Function at /api/waitlist, which is the source of truth. The
+// calm confirmation is shown ONLY after a durable 2xx from the Function — there
+// is no local "fake success" fallback. Progressive: without JS it is real HTML
+// that posts natively to the same endpoint.
+import Turnstile from './Turnstile.astro';
 ---
-<form class="waitlist" data-endpoint={endpoint} novalidate>
+
+<form class="waitlist" action="/api/waitlist" method="post" novalidate>
   <label class="waitlist__label" for="wl-email">La tua email</label>
   <div class="waitlist__row">
     <input
@@ -29,6 +25,24 @@ const { endpoint = '' } = Astro.props;
       Tienimi un posto
     </button>
   </div>
+
+  <!-- Honeypot: hidden from people, tempting to bots. Left empty by humans. -->
+  <div class="waitlist__hp" aria-hidden="true">
+    <label>Lascia vuoto questo campo
+      <input type="text" name="company" tabindex="-1" autocomplete="off" />
+    </label>
+  </div>
+
+  <label class="waitlist__consent">
+    <input type="checkbox" name="consent" value="on" required />
+    <span>
+      Acconsento a ricevere una sola email quando Pole² sarà pronto. Vedi la
+      <a href="/privacy">informativa privacy</a>.
+    </span>
+  </label>
+
+  <Turnstile />
+
   <p id="wl-note" class="waitlist__note">
     Solo per avvisarti quando Pole² sarà pronto. Niente pubblicità, nessun altro
     invio.
@@ -70,6 +84,29 @@ const { endpoint = '' } = Astro.props;
   .waitlist__submit {
     flex: 0 0 auto;
   }
+  .waitlist__submit:disabled {
+    opacity: 0.6;
+    cursor: default;
+  }
+  .waitlist__hp {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+  .waitlist__consent {
+    display: flex;
+    gap: 0.6rem;
+    align-items: flex-start;
+    margin-top: 1rem;
+    font-size: 0.95rem;
+    color: var(--muted);
+  }
+  .waitlist__consent input {
+    margin-top: 0.2rem;
+    flex: 0 0 auto;
+  }
   .waitlist__note {
     margin-top: 0.75rem;
     font-size: 0.9rem;
@@ -87,6 +124,8 @@ const { endpoint = '' } = Astro.props;
     }
   }
   .waitlist.is-done .waitlist__row,
+  .waitlist.is-done .waitlist__consent,
+  .waitlist.is-done .cf-turnstile,
   .waitlist.is-done .waitlist__note {
     display: none;
   }
@@ -98,13 +137,14 @@ const { endpoint = '' } = Astro.props;
 </style>
 
 <script>
-  // Progressive enhancement: without JS the form still renders and (once an
-  // endpoint is wired) can POST natively. With JS we validate calmly and never
-  // navigate away.
+  // Real submission with calm states. Success is shown ONLY on a durable 2xx.
   const form = document.querySelector<HTMLFormElement>('.waitlist');
   if (form) {
     const input = form.querySelector<HTMLInputElement>('#wl-email')!;
+    const consent = form.querySelector<HTMLInputElement>('input[name="consent"]')!;
+    const button = form.querySelector<HTMLButtonElement>('.waitlist__submit')!;
     const status = form.querySelector<HTMLParagraphElement>('#wl-status')!;
+    let pending = false;
 
     const say = (msg: string) => {
       status.textContent = msg;
@@ -112,6 +152,7 @@ const { endpoint = '' } = Astro.props;
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
+      if (pending) return; // no duplicate submission while a request is in flight
       input.setAttribute('aria-invalid', 'false');
 
       if (!input.value || !input.checkValidity()) {
@@ -120,27 +161,33 @@ const { endpoint = '' } = Astro.props;
         input.focus();
         return;
       }
-
-      const endpoint = form.dataset.endpoint;
-      if (endpoint) {
-        try {
-          say('Un momento…');
-          const res = await fetch(endpoint, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: new URLSearchParams({ email: input.value }).toString(),
-          });
-          if (!res.ok) throw new Error(String(res.status));
-        } catch {
-          say('Non è andato perso nulla. Riprova quando vuoi.');
-          return;
-        }
+      if (!consent.checked) {
+        say('Serve il tuo consenso per tenerti un posto.');
+        consent.focus();
+        return;
       }
 
-      // Calm confirmation (also the path used while no provider is attached).
-      form.classList.add('is-done');
-      say('Il tuo posto è tenuto. Ti scriveremo appena Pole² sarà pronto.');
-      status.focus?.();
+      pending = true;
+      button.disabled = true;
+      say('Un momento…');
+      try {
+        const res = await fetch('/api/waitlist', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams(new FormData(form) as any).toString(),
+        });
+        if (!res.ok) throw new Error(String(res.status));
+        // Durable success confirmed by the backend.
+        form.classList.add('is-done');
+        say('Il tuo posto è tenuto. Ti scriveremo appena Pole² sarà pronto.');
+        status.focus?.();
+      } catch {
+        // Never claim the place was saved. Keep the typed email; allow a retry.
+        say('Non è andato perso nulla. Riprova quando vuoi.');
+        button.disabled = false;
+      } finally {
+        pending = false;
+      }
     });
   }
 </script>

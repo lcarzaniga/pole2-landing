@@ -1,0 +1,33 @@
+---
+// Cloudflare Turnstile widget — privacy-first, no cookies. The site key is
+// PUBLIC by design (safe in client output); the secret lives only in the
+// Function's server env. When PUBLIC_TURNSTILE_SITE_KEY is not set at build
+// time, no widget renders and the server verification fails closed, so the form
+// shows the calm "riprova" state rather than a false success.
+const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
+---
+
+{
+  siteKey && (
+    <Fragment>
+      <div
+        class="cf-turnstile"
+        data-sitekey={siteKey}
+        data-theme="auto"
+        data-appearance="interaction-only"
+      />
+      <script
+        is:inline
+        src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+        async
+        defer
+      />
+    </Fragment>
+  )
+}
+
+<style>
+  .cf-turnstile {
+    margin-top: 1rem;
+  }
+</style>

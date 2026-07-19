@@ -1,0 +1,109 @@
+---
+import Base from '../layouts/Base.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Base
+  title="Privacy — Pole²"
+  description="Informativa privacy di Pole²: i dati dell'app restano sul dispositivo; il sito raccoglie solo email della lista d'attesa e messaggi di supporto, con Cloudflare e Resend come fornitori."
+>
+  <main id="contenuto" class="page">
+    <div class="wrap read">
+      <p class="eyebrow">Privacy</p>
+      <h1>Informativa privacy</h1>
+      <p class="lead">
+        In parole semplici: l’app funziona sul tuo dispositivo; il sito raccoglie
+        solo ciò che ci lasci volontariamente (email della lista d’attesa e
+        messaggi di supporto).
+      </p>
+
+      <h2>L’app Pole²</h2>
+      <ul>
+        <li>I tuoi dati (cose, foto, note, prestiti) restano <strong>in locale sul tuo dispositivo</strong>.</li>
+        <li>Non esiste un account Pole², non c’è cloud, non c’è analitica né tracciamento.</li>
+        <li>Il backup è manuale e la <strong>destinazione la scegli tu</strong>; è cifrato con una password che conosci solo tu.</li>
+        <li>Se un giorno vorrai condividere qualcosa, sarà una tua decisione.</li>
+      </ul>
+
+      <h2>Il sito pole2.app — lista d’attesa</h2>
+      <ul>
+        <li><strong>Cosa raccogliamo:</strong> l’indirizzo email che inserisci e la data.</li>
+        <li><strong>Perché:</strong> avvisarti, una sola volta, quando Pole² sarà pronto.</li>
+        <li><strong>Base giuridica:</strong> il tuo consenso, che dai spuntando la casella.</li>
+        <li><strong>Conservazione:</strong> fino al lancio e comunque non oltre 12 mesi, poi l’indirizzo viene eliminato.</li>
+      </ul>
+
+      <h2>Il sito pole2.app — supporto</h2>
+      <ul>
+        <li><strong>Cosa raccogliamo:</strong> l’email per risponderti, l’argomento, il messaggio che scrivi e, se le indichi, la versione dell’app.</li>
+        <li><strong>Perché:</strong> leggere e rispondere alla tua richiesta.</li>
+        <li><strong>Base giuridica:</strong> il tuo consenso e il nostro legittimo interesse a fornire assistenza.</li>
+        <li><strong>Conservazione:</strong> non oltre 24 mesi, poi il messaggio viene eliminato.</li>
+        <li>Ti chiediamo di <strong>non inviare</strong> backup, fotografie o informazioni personali sulle cose che conservi in Pole².</li>
+      </ul>
+
+      <h2>Fornitori (responsabili del trattamento)</h2>
+      <ul>
+        <li><strong>Cloudflare</strong> — ospita il sito e la banca dati dei moduli (lista d’attesa e supporto).</li>
+        <li><strong>Resend</strong> — invia a noi la notifica dei messaggi di supporto.</li>
+        <li><strong>Cloudflare Turnstile</strong> — verifica anti-spam senza cookie, per proteggere i moduli.</li>
+      </ul>
+      <p>
+        Per prevenire gli abusi conserviamo un valore derivato dall’indirizzo IP
+        tramite una funzione a senso unico: <strong>non conserviamo l’indirizzo IP
+        in chiaro</strong>.
+      </p>
+
+      <h2>Ko-fi</h2>
+      <p>
+        Il contributo volontario è gestito da Ko-fi e dal suo fornitore di
+        pagamento. <strong>Pole² non riceve i dati della tua carta.</strong>
+      </p>
+
+      <h2>I tuoi diritti</h2>
+      <p>
+        Puoi chiedere accesso, correzione o cancellazione dei dati che ci hai
+        lasciato scrivendoci dalla pagina <a href="/supporto">Supporto</a>
+        (categoria «Privacy e dati»).
+      </p>
+
+      <h2>Titolare</h2>
+      <p>
+        Il progetto <strong>Pole²</strong> è il titolare del trattamento per i
+        dati del sito. Ci contatti tramite <a href="/supporto">Supporto</a> o
+        all’indirizzo <strong>support@pole2.app</strong>.
+      </p>
+
+      <p class="fine">
+        Questa è l’informativa privacy del progetto, scritta in modo chiaro. Non è
+        una certificazione né una revisione legale indipendente; la aggiorneremo
+        con trasparenza se qualcosa cambierà.
+      </p>
+    </div>
+  </main>
+  <Footer />
+</Base>
+
+<style>
+  .page {
+    padding-block: clamp(3rem, 8vw, 6rem);
+  }
+  .read h1 {
+    margin: 0.3rem 0 0.6rem;
+  }
+  .read h2 {
+    margin-top: 2.2rem;
+  }
+  .read ul {
+    padding-left: 1.2rem;
+  }
+  .read li {
+    margin: 0.35rem 0;
+  }
+  .fine {
+    margin-top: 2.5rem;
+    font-size: 0.9rem;
+    color: var(--muted);
+    font-style: italic;
+  }
+</style>
