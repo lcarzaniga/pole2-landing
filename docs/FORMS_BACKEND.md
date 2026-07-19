@@ -1,12 +1,75 @@
-# Forms backend (waitlist + support) — Cloudflare Pages Functions + D1
+# Forms backend (waitlist + support) — Cloudflare Worker + Static Assets + D1
 
-The landing has a real backend for two forms, living **inside the same
-Cloudflare Pages deployment** (no separate host, no CORS):
+The landing has a real backend for two forms, served by the **same Cloudflare
+Worker** that serves the static site (no separate host, no CORS):
 
 - **Waitlist** — `POST /api/waitlist` → `functions/api/waitlist.js`
 - **Support** — `POST /api/support` → `functions/api/support.js`
 - Shared helpers — `functions/_lib/*.js`
+- Worker entrypoint/router — `worker.js`
+- Worker config — `wrangler.jsonc`
 - Schema — `migrations/0001_forms.sql`
+
+## Deployment model (IMPORTANT): Worker + Static Assets, **not** Pages
+
+Production is a **Cloudflare Worker with a Static Assets binding**, not a classic
+Pages project. Consequences:
+
+- The Pages **`functions/` auto-routing convention does not apply** — a Worker
+  never scans a repo-root `functions/` directory. Those files are now just JS
+  modules **imported by `worker.js`** (the single `main` entrypoint), which
+  routes `/api/waitlist` and `/api/support` to the existing handlers and hands
+  everything else to `env.ASSETS.fetch(request)`.
+- **`pages_build_output_dir` alone would NOT fix this.** That key is a *Pages*
+  build setting; it only tells a Pages build where the static output is and
+  enables the Pages `functions/` convention. On a Worker there is no
+  `functions/` routing at all, so `pages_build_output_dir` is ignored/irrelevant.
+  The fix requires a **Worker entrypoint** (`main`) plus an **`assets`** binding
+  with `run_worker_first: ["/api/*"]` — exactly what `wrangler.jsonc` adds.
+
+### `wrangler.jsonc` essentials
+- `main: ./worker.js`, `assets.directory: ./dist`, `assets.binding: ASSETS`,
+  `assets.run_worker_first: ["/api/*"]` (Worker runs first only for the API;
+  all other traffic is served straight from static assets),
+  `assets.html_handling: auto-trailing-slash` (preserves Astro's clean URLs).
+- `d1_databases: [{ binding: DB, database_name: pole2-forms, database_id: … }]`.
+- `vars: { NOTIFY_EMAIL, SUPPORT_FROM }` — **non-secret** public values, declared
+  so a config-driven deploy never drops them.
+- ⚠️ **`name` must equal the existing production Worker's name** (dashboard →
+  Workers & Pages). Verify/edit it **before** the first config deploy, or the
+  build targets/creates the wrong Worker.
+
+### Bindings/vars preserved on a config deploy
+- **Secrets** (`TURNSTILE_SECRET`, `IP_HASH_SECRET`, `RESEND_API_KEY`) are **not**
+  in `wrangler.jsonc`; secrets are stored encrypted and **persist across
+  deploys** (config never contains or deletes them). Keep them dashboard-managed
+  (or `wrangler secret put`).
+- **`DB`** and **`ASSETS`** come from `wrangler.jsonc` (same DB name/id → no
+  change).
+- **`NOTIFY_EMAIL` / `SUPPORT_FROM`** are in `vars` (non-secret) → preserved.
+- **`PUBLIC_TURNSTILE_SITE_KEY`** is a **build-time** variable (baked into
+  `./dist` by Astro during `npm run build`); it lives in the **Workers Builds
+  build environment**, not as a Worker runtime var, and is unaffected by
+  `wrangler.jsonc`. Keep it set in the build config.
+
+### Exact production build / deploy commands
+The Git-connected **Workers Builds** must run:
+- **Build command:** `npm run build`  (Astro → `./dist`; requires
+  `PUBLIC_TURNSTILE_SITE_KEY` in the build env)
+- **Deploy command:** `npx wrangler deploy`  (uploads `worker.js` + `./dist`
+  assets + `DB` binding using `wrangler.jsonc`)
+
+Local (needs Node ≥ 22): `npm run build && npx wrangler deploy --dry-run` to
+validate the config without deploying; `npm run deploy` to deploy.
+
+### Post-deploy verification (the fix worked)
+```
+curl -s -o /dev/null -w "%{http_code} %{content_type}\n" https://pole2.app/api/waitlist
+curl -s -o /dev/null -w "%{http_code} %{content_type}\n" https://pole2.app/api/support
+```
+Both must return **`405 application/json`** (the handlers' POST-only guard) —
+**not** the Astro HTML `404`. A `404 text/html` means the Worker/assets routing
+still isn't picking up `worker.js`.
 
 **D1 is the source of truth.** Turnstile guards both forms (privacy-first, no
 cookies). Resend sends a support notification to `NOTIFY_EMAIL`

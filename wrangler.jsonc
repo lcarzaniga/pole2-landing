@@ -1,0 +1,40 @@
+{
+  // Cloudflare Worker + Static Assets configuration for pole2-landing.
+  //
+  // ⚠️ `name` MUST equal the EXISTING production Worker's name (Cloudflare
+  //    dashboard → Workers & Pages → your worker). If it differs, EDIT it before
+  //    the first config-driven deploy, or the build will target/create a
+  //    different Worker. Verify before pushing.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "pole2-landing",
+  "main": "./worker.js",
+  "compatibility_date": "2025-06-01",
+
+  // Serve the Astro static build; run the Worker FIRST only for /api/* (not for
+  // general site traffic), preserving Astro's clean/trailing-slash routing.
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "html_handling": "auto-trailing-slash",
+    "run_worker_first": ["/api/*"]
+  },
+
+  // Existing D1 database (already created; schema already applied remotely).
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "pole2-forms",
+      "database_id": "072356d5-1577-456e-a80e-986257f4faed"
+    }
+  ],
+
+  // Non-secret, public runtime vars. Declaring them here keeps a config-driven
+  // deploy from dropping them. Secrets (TURNSTILE_SECRET, IP_HASH_SECRET,
+  // RESEND_API_KEY) are NOT here — they stay dashboard-managed and persist
+  // across deploys. PUBLIC_TURNSTILE_SITE_KEY is a BUILD-time variable (baked
+  // into ./dist by Astro), not a Worker runtime var, so it is not listed here.
+  "vars": {
+    "NOTIFY_EMAIL": "support@pole2.app",
+    "SUPPORT_FROM": "Pole² Support <support@pole2.app>"
+  }
+}
