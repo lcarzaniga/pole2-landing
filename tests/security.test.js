@@ -8,14 +8,38 @@ import {
 } from '../functions/_lib/security.js';
 import { makeRequest } from './helpers.js';
 
-test('originAllowed accepts the allowlist and rejects others', () => {
-  assert.ok(originAllowed(makeRequest({}, { origin: 'https://pole2.app' })));
-  assert.ok(originAllowed(makeRequest({}, { origin: 'https://pole2.it' })));
-  assert.equal(
-    originAllowed(makeRequest({}, { origin: 'https://evil.example' })),
-    false,
-  );
-  assert.equal(originAllowed(makeRequest({}, { origin: '' })), false); // missing Origin
+test('originAllowed accepts the eight exact allowed origins', () => {
+  const accepted = [
+    'https://pole2.app',
+    'https://www.pole2.app',
+    'https://pole2.it',
+    'https://www.pole2.it',
+    'https://pole2.site',
+    'https://www.pole2.site',
+    'https://pole2.online',
+    'https://www.pole2.online',
+  ];
+  for (const origin of accepted) {
+    assert.ok(originAllowed(makeRequest({}, { origin })), `accept: ${origin}`);
+  }
+});
+
+test('originAllowed rejects look-alikes, subdomains, wrong scheme, and empty', () => {
+  const rejected = [
+    'https://evil.example',
+    'http://pole2.app', // wrong scheme
+    'https://pole2.app.evil.com', // suffix spoof
+    'https://evilpole2.app', // prefix spoof
+    'https://sub.pole2.app', // arbitrary subdomain (not www)
+    'https://pole2.site.evil.com',
+    'https://www.pole2.online.evil.com',
+    'https://pole2.app:8443', // port variant
+    'https://pole2.dev', // unrelated TLD
+    '', // missing Origin
+  ];
+  for (const origin of rejected) {
+    assert.equal(originAllowed(makeRequest({}, { origin })), false, `reject: ${origin}`);
+  }
 });
 
 test('isFormContentType', () => {

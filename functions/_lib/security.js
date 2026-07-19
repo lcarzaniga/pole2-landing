@@ -1,16 +1,23 @@
 // Request-level security helpers: origin allowlist, content-type + size guards,
 // keyed IP hashing (never the raw IP), and Turnstile verification. Web APIs only.
 
-// Same-site origins allowed to POST the forms. Both canonical domains and their
-// www variants — nothing else.
+// Same-site origins allowed to POST the forms. The canonical domain, the two
+// live domains, and the legacy aliases — each with its www variant, and each an
+// EXACT match. No wildcards, no suffix/contains checks: arbitrary subdomains and
+// look-alikes are rejected.
 export const ALLOWED_ORIGINS = Object.freeze([
   'https://pole2.app',
   'https://www.pole2.app',
   'https://pole2.it',
   'https://www.pole2.it',
+  'https://pole2.site',
+  'https://www.pole2.site',
+  'https://pole2.online',
+  'https://www.pole2.online',
 ]);
 
-/** Require a same-site Origin header on the allowlist (blocks cross-site POSTs). */
+/** Require a same-site Origin header that EXACTLY matches the allowlist (blocks
+ *  cross-site POSTs and subdomain/look-alike spoofs). */
 export function originAllowed(request) {
   const origin = request.headers.get('Origin');
   return !!origin && ALLOWED_ORIGINS.includes(origin);
