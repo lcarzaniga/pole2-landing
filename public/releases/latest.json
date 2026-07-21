@@ -1,8 +1,9 @@
 {
-  "versionName": "1.0.3",
-  "versionCode": 2008,
-  "apkUrl": "https://github.com/lcarzaniga/pole2-app/releases/download/v1.0.3-vc2008/pole2-android-1.0.3-vc2008.apk",
-  "sha256": "c6f04083ea168bb7bb3b7c9214e219a1d83d122cab9c6e3a6d1c3383bbe78388",
-  "notes": ["Tocca la foto per vederla a schermo intero", "Pizzica per zoomare e scorri", "Sostituisci la foto con la matita"],
+  "versionName": "1.0.18",
+  "versionCode": 2023,
+  "apkUrl": "https://github.com/lcarzaniga/pole2-app/releases/download/v1.0.18-vc2023/pole2-android-1.0.18-vc2023.apk",
+  "sha256": "ac804742e6b4dc6901dbae217928cdac5faf7088cbb3f01b3ccc43dcbd58f08d",
+  "notes": ["Aggiornamenti più sicuri: Pole² può proporti un backup prima di aggiornare", "Nuova sezione «Persone»: prestiti, regali e restituzioni", "Filtro «Dove si trova» e «Riordina questo luogo»", "«Informazioni e supporto» con licenze open source"],
+  "backupRecommended": true,
   "mandatory": false
 }
