@@ -6,7 +6,7 @@ import Wordmark from '../components/Wordmark.astro';
 
 <Base
   title="Guida — Pole²"
-  description="Come usare Pole²: creare cose da foto o dal nome, foto e galleria, ricerca e «Dove si trova», Luoghi, Persone e prestiti, Archivio, riordino e backup cifrato — tutto sul tuo dispositivo."
+  description="Come usare Pole² e come gestirlo con calma: requisiti Android, installazione e aggiornamenti in locale, backup cifrato, ripristino sicuro, aggiornamenti sicuri e risoluzione dei problemi. Tutto resta sul tuo dispositivo."
 >
   <main id="contenuto" class="page">
     <div class="wrap read">
@@ -86,9 +86,130 @@ import Wordmark from '../components/Wordmark.astro';
         decidi tu.
       </p>
 
+      <hr class="rule" />
+
+      <p class="eyebrow">Installazione e manutenzione</p>
+      <h2 id="requisiti">Requisiti</h2>
+      <ul>
+        <li>Android <strong>7.0</strong> o versione successiva.</li>
+        <li>Un <strong>APK Android universale</strong> (un solo file, per tutti i dispositivi compatibili).</li>
+        <li>
+          Pole² è distribuito come <strong>beta</strong> al di fuori del Google
+          Play Store: si installa dai <strong>Release ufficiali su GitHub</strong>
+          o tramite l’aggiornamento interno di Pole².
+        </li>
+      </ul>
+
+      <h2 id="installazione">Installazione e aggiornamento</h2>
+      <ul>
+        <li>
+          Scarica il file <strong>solo</strong> dal
+          <a href="https://github.com/lcarzaniga/pole2-app/releases" rel="noopener">Release ufficiale di Pole² su GitHub</a>
+          oppure dall’<strong>aggiornamento ufficiale dentro l’app</strong>. Non
+          scaricarlo da altre fonti.
+        </li>
+        <li>
+          Aprendo l’APK, Android può chiederti di <strong>consentire
+          l’installazione</strong> dall’app che lo ha aperto (il browser o il
+          gestore file).
+        </li>
+        <li>
+          Quel permesso riguarda <strong>quell’app di origine</strong>, non
+          Pole²: puoi <strong>disattivarlo di nuovo</strong> dopo
+          l’installazione.
+        </li>
+        <li>
+          Un aggiornamento <strong>sul posto</strong>, firmato con la stessa
+          chiave di Pole², <strong>mantiene i tuoi dati e le fotografie</strong>:
+          non serve reinstallare da zero.
+        </li>
+        <li>
+          <strong>Non disinstallare</strong> Pole² prima di aggiornare: perderesti
+          i dati locali. L’aggiornamento va installato sopra la versione esistente.
+        </li>
+      </ul>
+
+      <h2 id="backup">Backup</h2>
+      <ul>
+        <li>Il backup è <strong>manuale e locale</strong>: lo crei tu, quando vuoi.</li>
+        <li>Contiene il <strong>database di Pole²</strong> e le <strong>fotografie collegate</strong>.</li>
+        <li>È consigliata la <strong>protezione con password</strong>.</li>
+        <li>
+          Una password del backup <strong>dimenticata non è recuperabile</strong>:
+          senza, quel backup non è leggibile. Conservala con cura.
+        </li>
+        <li>Pole² <strong>non ha copie nel cloud né un account</strong>: nessuno può reimpostarla per te.</li>
+        <li>Scegli tu <strong>dove salvare il file</strong>.</li>
+      </ul>
+
+      <h2 id="ripristino">Ripristino</h2>
+      <ul>
+        <li>
+          Il ripristino <strong>sostituisce</strong> i contenuti attuali di Pole²
+          con quelli del backup: <strong>non li unisce</strong>.
+        </li>
+        <li>
+          Pole² <strong>verifica e prepara</strong> il backup prima di toccare i
+          dati attivi.
+        </li>
+        <li>
+          Mantiene una <strong>copia di sicurezza d’emergenza</strong> e, se la
+          verifica non riesce, <strong>torna automaticamente</strong> ai dati
+          precedenti.
+        </li>
+        <li>
+          Per completare l’operazione l’app <strong>si chiude e va riaperta</strong>.
+        </li>
+        <li>
+          Prima di ripristinare, conviene creare un <strong>nuovo backup dei dati
+          attuali</strong>.
+        </li>
+      </ul>
+
+      <h2 id="aggiornamenti-sicuri">Aggiornamenti sicuri</h2>
+      <ul>
+        <li>Alcune versioni possono <strong>consigliare un backup</strong> prima di scaricare.</li>
+        <li>Puoi comunque <strong>continuare senza backup</strong> o <strong>rimandare</strong>.</li>
+        <li>Gli aggiornamenti <strong>non si installano mai da soli</strong>.</li>
+        <li>Pole² <strong>blocca un aggiornamento mentre un ripristino è in corso</strong>.</li>
+        <li>Gli APK scaricati sono <strong>verificati con SHA-256</strong> prima dell’installazione.</li>
+      </ul>
+
+      <h2 id="problemi">Se qualcosa non va</h2>
+      <ul>
+        <li>
+          <strong>Sei offline o l’aggiornamento non è disponibile:</strong>
+          continua a usare l’app e riprova più tardi. Nulla si blocca.
+        </li>
+        <li>
+          <strong>L’installazione è bloccata:</strong> controlla il permesso
+          «<strong>Installa app sconosciute</strong>» per l’app che ha aperto
+          l’APK.
+        </li>
+        <li>
+          <strong>Il ripristino non riesce:</strong> Pole² <strong>ripristina da
+          solo</strong> i dati locali precedenti.
+        </li>
+        <li>
+          Serve aiuto? Scrivici dalla pagina <a href="/supporto">Supporto</a>.
+        </li>
+      </ul>
+      <p class="warn">
+        Per la tua privacy, <strong>non inviare</strong> backup, database,
+        fotografie, password o contenuti sensibili delle cose che conservi in
+        Pole². Per aiutarti ci basta la descrizione del problema.
+      </p>
+
+      <h2 id="fonti-ufficiali">Fonti ufficiali</h2>
+      <ul>
+        <li><a href="https://github.com/lcarzaniga/pole2-app/releases" rel="noopener">Release ufficiali su GitHub</a> — da qui scarichi l’APK.</li>
+        <li><a href="/privacy">Privacy</a> — cosa resta sul dispositivo e cosa raccoglie il sito.</li>
+        <li><a href="/supporto">Supporto</a> — scrivici se qualcosa non torna.</li>
+        <li><a href="/novita">Novità</a> — cosa è cambiato.</li>
+      </ul>
       <p class="muted">
-        Hai una domanda o un problema? Scrivici dalla pagina
-        <a href="/supporto">Supporto</a>.
+        Pole² non è sul Play Store: non esiste un link ufficiale al Play Store.
+        L’unico canale di download è il Release ufficiale su GitHub.
       </p>
     </div>
   </main>
@@ -113,5 +234,21 @@ import Wordmark from '../components/Wordmark.astro';
   }
   .muted {
     color: var(--muted);
+  }
+  .rule {
+    margin: 2.6rem 0 0.4rem;
+    border: 0;
+    border-top: 1px solid var(--hairline);
+  }
+  .read .eyebrow {
+    margin-top: 1.4rem;
+  }
+  .warn {
+    margin-top: 1rem;
+    padding: 0.9rem 1.1rem;
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    color: var(--ink);
   }
 </style>
