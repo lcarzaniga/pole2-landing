@@ -3,7 +3,7 @@
   "versionCode": 2028,
   "apkUrl": "https://github.com/lcarzaniga/pole2-app/releases/download/v1.0.23-vc2028/pole2-android-1.0.23-vc2028.apk",
   "sha256": "99d1fb96c61810cac0fe8040cd3f1f29d7d9d537416f170a70ef2ff1a7943aa1",
-  "notes": ["Aggiornamenti più sicuri: Pole² può proporti un backup prima di aggiornare", "Nuova sezione «Persone»: prestiti, regali e restituzioni", "Filtro «Dove si trova» e «Riordina questo luogo»", "«Informazioni e supporto» con licenze open source"],
-  "backupRecommended": true,
+  "notes": ["Nuova icona dell’app con Kobe, più riconoscibile e coerente con l’identità di Pole²."],
+  "backupRecommended": false,
   "mandatory": false
 }
