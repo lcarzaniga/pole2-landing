@@ -4,6 +4,8 @@
   "apkUrl": "https://github.com/lcarzaniga/pole2-app/releases/download/v1.0.25-vc2030/pole2-android-1.0.25-vc2030.apk",
   "sha256": "07374d1ffaa8f5e24bd45ebf0c127b9102b71716437f6e7dbba14eaba41d585d",
   "notes": ["Puoi allegare foto, scontrini e documenti alle note e alle registrazioni.", "Scatta una foto, scegline una dalla galleria oppure seleziona un documento.", "Foto e documenti possono essere conservati insieme nella stessa registrazione."],
+  "notes_it": ["Puoi allegare foto, scontrini e documenti alle note e alle registrazioni.", "Scatta una foto, scegline una dalla galleria oppure seleziona un documento.", "Foto e documenti possono essere conservati insieme nella stessa registrazione."],
+  "notes_en": ["You can attach photos, receipts and documents to your notes and records.", "Take a photo, pick one from your gallery, or choose a document.", "Photos and documents can be kept together in the same record."],
   "backupRecommended": false,
   "mandatory": false
 }
