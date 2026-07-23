@@ -9,6 +9,8 @@ node_modules/
 # env / secrets (the future waitlist provider key lives here)
 .env
 .env.production
+# Wrangler local dev secrets (TURNSTILE_SECRET etc.) — never commit.
+.dev.vars
 
 # os / editor
 .DS_Store
