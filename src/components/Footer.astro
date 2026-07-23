@@ -1,17 +1,22 @@
 ---
 import Wordmark from './Wordmark.astro';
+import { STRINGS, localeFromPath, localizedPath } from '../i18n';
+
+const locale = localeFromPath(Astro.url.pathname);
+const s = STRINGS[locale];
+const p = (b: string) => localizedPath(b, locale);
 ---
 
 <footer class="footer">
   <div class="wrap footer__inner">
     <Wordmark size="1.4rem" />
-    <nav class="footer__nav" aria-label="Pagine">
-      <a href="/guida">Guida</a>
-      <a href="/supporto">Supporto</a>
-      <a href="/privacy">Privacy</a>
-      <a href="/novita">Novità</a>
+    <nav class="footer__nav" aria-label={s.nav.pagesLabel}>
+      <a href={p('/guida')}>{s.nav.guide}</a>
+      <a href={p('/supporto')}>{s.nav.support}</a>
+      <a href={p('/privacy')}>{s.nav.privacy}</a>
+      <a href={p('/novita')}>{s.nav.news}</a>
     </nav>
-    <p class="footer__line">Tutto resta sul tuo dispositivo.</p>
+    <p class="footer__line">{s.footerLine}</p>
     <p class="footer__fine">© 2026 Pole²</p>
   </div>
 </footer>

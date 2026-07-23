@@ -69,6 +69,21 @@ test('invalid category is rejected', async () => {
   assert.equal(env.DB.calls.length, 0);
 });
 
+test('a stable topic key is accepted and stored as its canonical label', async () => {
+  let payload;
+  const restore = installFetch({ turnstile: true, resendOk: true, capture: (p) => (payload = p) });
+  const env = { ...ENV, DB: new MockDB() };
+  // The localized site submits 'technical', never the translated label.
+  const res = await handleSupport(ctx(makeRequest(base({ category: 'technical' })), env));
+  restore();
+  assert.equal(res.status, 200);
+  const row = [...env.DB.support.values()][0];
+  // Stored category is bind param #3 (id, email, category, …): the canonical
+  // Italian label, not the raw stable key.
+  assert.equal(row.args[2], 'Problema tecnico');
+  assert.equal(payload.subject, '[Pole²] Problema tecnico');
+});
+
 test('too-short and too-long messages are rejected', async () => {
   const env = { ...ENV, DB: new MockDB() };
   const short = await handleSupport(ctx(makeRequest(base({ message: 'corto' })), env));

@@ -4,17 +4,44 @@
 // Implemented as a plain external link (no Ko-fi SDK/iframe/widget), so it adds
 // no scripts, no cookies and no tracking — it just opens Ko-fi in a new tab.
 import { KOFI_URL } from '../config';
+import { localeFromPath } from '../i18n';
+
+const locale = localeFromPath(Astro.url.pathname);
+const c =
+  locale === 'it'
+    ? {
+        eyebrow: 'Sostieni',
+        h: 'Sostieni Pole²',
+        lead:
+          'Pole² è gratuito durante la beta. Se ti è utile, puoi contribuire volontariamente allo sviluppo e ai costi del progetto. Il contributo non è necessario per utilizzare Pole² e non sblocca funzionalità.',
+        cta: 'Offri un caffè a Kobe',
+        aria: 'Sostieni volontariamente lo sviluppo di Pole² su Ko-fi',
+        ext: 'Pagamento gestito esternamente da Ko-fi.',
+        note:
+          'Se in futuro i costi non permetteranno di mantenere questo modello, comunicheremo con trasparenza l’eventuale passaggio a una versione a pagamento.',
+        privacy:
+          'Il pulsante apre Ko-fi in una nuova scheda. Il pagamento è gestito da Ko-fi e dal suo fornitore di pagamento, secondo le loro condizioni e informative privacy; Pole² non riceve i dati della tua carta.',
+      }
+    : {
+        eyebrow: 'Support the project',
+        h: 'Support Pole²',
+        lead:
+          'Pole² is free during the beta. If you find it useful, you can contribute voluntarily to the project’s development and running costs. Contributing isn’t required to use Pole² and unlocks nothing.',
+        cta: 'Buy Kobe a coffee',
+        aria: 'Voluntarily support the development of Pole² on Ko-fi',
+        ext: 'Payment handled externally by Ko-fi.',
+        note:
+          'If one day the costs no longer allow this model, we’ll be transparent about any move to a paid version.',
+        privacy:
+          'The button opens Ko-fi in a new tab. Payment is handled by Ko-fi and its payment provider, under their terms and privacy notices; Pole² never receives your card details.',
+      };
 ---
 
 <section class="section support" id="sostieni" aria-labelledby="support-h">
   <div class="wrap read reveal">
-    <p class="eyebrow">Sostieni</p>
-    <h2 id="support-h">Sostieni Pole²</h2>
-    <p class="lead">
-      Pole² è gratuito durante la beta. Se ti è utile, puoi contribuire
-      volontariamente allo sviluppo e ai costi del progetto. Il contributo non è
-      necessario per utilizzare Pole² e non sblocca funzionalità.
-    </p>
+    <p class="eyebrow">{c.eyebrow}</p>
+    <h2 id="support-h">{c.h}</h2>
+    <p class="lead">{c.lead}</p>
 
     <div class="support__cta">
       <a
@@ -22,24 +49,15 @@ import { KOFI_URL } from '../config';
         href={KOFI_URL}
         target="_blank"
         rel="noopener noreferrer"
-        aria-label="Sostieni volontariamente lo sviluppo di Pole² su Ko-fi"
+        aria-label={c.aria}
       >
-        Offri un caffè a Kobe
+        {c.cta}
       </a>
-      <p class="support__ext">Pagamento gestito esternamente da Ko-fi.</p>
+      <p class="support__ext">{c.ext}</p>
     </div>
 
-    <p class="support__note">
-      Se in futuro i costi non permetteranno di mantenere questo modello,
-      comunicheremo con trasparenza l’eventuale passaggio a una versione a
-      pagamento.
-    </p>
-
-    <p class="support__privacy">
-      Il pulsante apre Ko-fi in una nuova scheda. Il pagamento è gestito da
-      Ko-fi e dal suo fornitore di pagamento, secondo le loro condizioni e
-      informative privacy; Pole² non riceve i dati della tua carta.
-    </p>
+    <p class="support__note">{c.note}</p>
+    <p class="support__privacy">{c.privacy}</p>
   </div>
 </section>
 

@@ -5,10 +5,24 @@
 // is no local "fake success" fallback. Progressive: without JS it is real HTML
 // that posts natively to the same endpoint.
 import Turnstile from './Turnstile.astro';
+import { STRINGS, localeFromPath, localizedPath } from '../i18n';
+
+const locale = localeFromPath(Astro.url.pathname);
+const w = STRINGS[locale].waitlist;
+const privacyHref = localizedPath('/privacy', locale);
 ---
 
-<form class="waitlist" action="/api/waitlist" method="post" novalidate>
-  <label class="waitlist__label" for="wl-email">La tua email</label>
+<form
+  class="waitlist"
+  action="/api/waitlist"
+  method="post"
+  novalidate
+  data-check-email={w.checkEmail}
+  data-need-consent={w.needConsent}
+  data-success={w.success}
+  data-fail={w.fail}
+>
+  <label class="waitlist__label" for="wl-email">{w.label}</label>
   <div class="waitlist__row">
     <input
       id="wl-email"
@@ -17,18 +31,18 @@ import Turnstile from './Turnstile.astro';
       name="email"
       inputmode="email"
       autocomplete="email"
-      placeholder="tu@esempio.it"
+      placeholder={w.placeholder}
       required
       aria-describedby="wl-note wl-status"
     />
     <button class="btn btn--primary waitlist__submit" type="submit">
-      Tienimi un posto
+      {w.submit}
     </button>
   </div>
 
   <!-- Honeypot: hidden from people, tempting to bots. Left empty by humans. -->
   <div class="waitlist__hp" aria-hidden="true">
-    <label>Lascia vuoto questo campo
+    <label>{w.hpLabel}
       <input type="text" name="company" tabindex="-1" autocomplete="off" />
     </label>
   </div>
@@ -36,17 +50,13 @@ import Turnstile from './Turnstile.astro';
   <label class="waitlist__consent">
     <input type="checkbox" name="consent" value="on" required />
     <span>
-      Acconsento a ricevere una sola email quando Pole² sarà pronto. Vedi la
-      <a href="/privacy">informativa privacy</a>.
+      {w.consent} <a href={privacyHref}>{w.privacyLink}</a>.
     </span>
   </label>
 
   <Turnstile />
 
-  <p id="wl-note" class="waitlist__note">
-    Solo per avvisarti quando Pole² sarà pronto. Niente pubblicità, nessun altro
-    invio.
-  </p>
+  <p id="wl-note" class="waitlist__note">{w.note}</p>
   <p id="wl-status" class="waitlist__status" role="status" aria-live="polite"></p>
 </form>
 
@@ -144,6 +154,7 @@ import Turnstile from './Turnstile.astro';
     const consent = form.querySelector<HTMLInputElement>('input[name="consent"]')!;
     const button = form.querySelector<HTMLButtonElement>('.waitlist__submit')!;
     const status = form.querySelector<HTMLParagraphElement>('#wl-status')!;
+    const t = (k: string, fallback: string) => form.dataset[k] || fallback;
     let pending = false;
 
     const say = (msg: string) => {
@@ -157,19 +168,19 @@ import Turnstile from './Turnstile.astro';
 
       if (!input.value || !input.checkValidity()) {
         input.setAttribute('aria-invalid', 'true');
-        say('Controlla l’indirizzo email, con calma.');
+        say(t('checkEmail', 'Check the email address and try again.'));
         input.focus();
         return;
       }
       if (!consent.checked) {
-        say('Serve il tuo consenso per tenerti un posto.');
+        say(t('needConsent', 'We need your consent to save you a spot.'));
         consent.focus();
         return;
       }
 
       pending = true;
       button.disabled = true;
-      say('Un momento…');
+      say('…');
       try {
         const res = await fetch('/api/waitlist', {
           method: 'POST',
@@ -179,11 +190,11 @@ import Turnstile from './Turnstile.astro';
         if (!res.ok) throw new Error(String(res.status));
         // Durable success confirmed by the backend.
         form.classList.add('is-done');
-        say('Il tuo posto è tenuto. Ti scriveremo appena Pole² sarà pronto.');
+        say(t('success', 'Your spot is saved.'));
         status.focus?.();
       } catch {
         // Never claim the place was saved. Keep the typed email; allow a retry.
-        say('Non è andato perso nulla. Riprova quando vuoi.');
+        say(t('fail', 'Nothing was lost. Try again whenever you like.'));
         button.disabled = false;
       } finally {
         pending = false;

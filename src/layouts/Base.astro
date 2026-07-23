@@ -1,27 +1,66 @@
 ---
 import '../styles/global.css';
+import {
+  STRINGS,
+  basePath,
+  localeFromPath,
+  localizedPath,
+  DEFAULT_LOCALE,
+} from '../i18n';
+import LangSwitch from '../components/LangSwitch.astro';
 
 interface Props {
   title?: string;
   description?: string;
 }
+
+// The locale is derived from the URL, so Italian pages need no extra prop and
+// English pages under /en/ are detected automatically.
+const locale = localeFromPath(Astro.url.pathname);
+const s = STRINGS[locale];
+
+const defaults = {
+  it: {
+    title: 'Pole² — Custodisci ciò che conta',
+    description:
+      'Pole² è una casa serena per le cose a cui tieni: ricevute, garanzie, manuali e ricordi, tutti insieme e al sicuro sul tuo dispositivo.',
+  },
+  en: {
+    title: 'Pole² — Keep what matters',
+    description:
+      'Pole² is a calm home for the things you care about: receipts, warranties, manuals and memories, all together and safe on your device.',
+  },
+};
 const {
-  title = 'Pole² — Custodisci ciò che conta',
-  description = 'Pole² è una casa serena per le cose a cui tieni: ricevute, garanzie, manuali e ricordi, tutti insieme e al sicuro sul tuo dispositivo.',
+  title = defaults[locale].title,
+  description = defaults[locale].description,
 } = Astro.props;
 
+// SEO: self-referencing canonical + reciprocal hreflang. The logical path is
+// shared between locales; pole2.app stays canonical for every URL.
+const base = basePath(Astro.url.pathname);
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const itHref = new URL(localizedPath(base, 'it'), Astro.site).href;
+const enHref = new URL(localizedPath(base, 'en'), Astro.site).href;
 const ogImage = new URL('/og.png', Astro.site).href;
+const ogAlt =
+  locale === 'it'
+    ? 'Pole² — «So di averlo. Ma dov’è?»'
+    : 'Pole² — “I know I have it. But where?”';
 ---
 
 <!doctype html>
-<html lang="it">
+<html lang={s.htmlLang}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
+    <!-- Reciprocal alternates: each locale's equivalent page, plus x-default. -->
+    <link rel="alternate" hreflang="it" href={itHref} />
+    <link rel="alternate" hreflang="en" href={enHref} />
+    <link rel="alternate" hreflang="x-default" href={itHref} />
     <meta name="theme-color" content="#2e6b5e" />
     <meta name="color-scheme" content="light dark" />
 
@@ -44,12 +83,16 @@ const ogImage = new URL('/og.png', Astro.site).href;
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
-    <meta property="og:locale" content="it_IT" />
+    <meta property="og:locale" content={s.ogLocale} />
+    <meta
+      property="og:locale:alternate"
+      content={locale === 'it' ? 'en_US' : 'it_IT'}
+    />
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:type" content="image/png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="Pole² — «So di averlo. Ma dov’è?»" />
+    <meta property="og:image:alt" content={ogAlt} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
@@ -63,7 +106,7 @@ const ogImage = new URL('/og.png', Astro.site).href;
         '@type': 'WebSite',
         name: 'Pole²',
         url: Astro.site?.href,
-        inLanguage: 'it',
+        inLanguage: s.htmlLang,
         description,
       })}
     />
@@ -73,9 +116,26 @@ const ogImage = new URL('/og.png', Astro.site).href;
     <script is:inline>
       document.documentElement.classList.add('js');
     </script>
+
+    {
+      /* First-visit language detection — client-side only, root page only. No
+         server redirect, no loop (it only ever sends the Italian root to /en/,
+         never the reverse), and a saved choice always wins. */
+      locale === DEFAULT_LOCALE && base === '/' && (
+        <script
+          is:inline
+          set:html={`(function(){try{var s=localStorage.getItem('pole2-lang');if(s==='it'||s==='en')return;var ls=navigator.languages||[navigator.language||''];var it=ls.some(function(l){return (l||'').toLowerCase().indexOf('it')===0;});if(!it)location.replace('/en/');}catch(e){}})();`}
+        />
+      )
+    }
   </head>
   <body>
-    <a class="skip-link" href="#contenuto">Vai al contenuto</a>
+    <a class="skip-link" href="#contenuto">{s.skip}</a>
+    <div class="topbar">
+      <div class="wrap topbar__inner">
+        <LangSwitch locale={locale} base={base} />
+      </div>
+    </div>
     <slot />
 
     <script>
@@ -102,3 +162,14 @@ const ogImage = new URL('/og.png', Astro.site).href;
     </script>
   </body>
 </html>
+
+<style>
+  .topbar {
+    border-bottom: 1px solid var(--hairline);
+  }
+  .topbar__inner {
+    display: flex;
+    justify-content: flex-end;
+    padding-block: 0.6rem;
+  }
+</style>

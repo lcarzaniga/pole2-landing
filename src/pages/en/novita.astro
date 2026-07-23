@@ -1,0 +1,111 @@
+---
+import Base from '../../layouts/Base.astro';
+import Footer from '../../components/Footer.astro';
+
+// A concise, human-readable changelog. Beta only — no dates or promises for
+// features that are not yet available.
+const entries = [
+  {
+    tag: 'Private beta',
+    title: 'People, loans and “Where it is”',
+    body:
+      'A People section to see who has something of yours on loan or as a gift, and a single “Where it is” filter on the main screen: place or person.',
+  },
+  {
+    tag: 'Private beta',
+    title: 'Kobe: two ways to start',
+    body:
+      'The turtle opens just two clear choices — “From a photo” and “From a name” — because a thing always begins the same way.',
+  },
+  {
+    tag: 'Private beta',
+    title: 'Encrypted backup and restore',
+    body:
+      'An encrypted backup of your data and photos, saved wherever you choose, and a safe restore that keeps a copy throughout the operation.',
+  },
+  {
+    tag: 'Private beta',
+    title: 'Places, Archive and tidying up',
+    body:
+      'Places that contain one another, a calm Archive for what leaves everyday use, and “Tidy up this place” to put things back in order one at a time.',
+  },
+];
+---
+
+<Base
+  title="What’s new — Pole²"
+  description="What’s new in Pole² during the private beta: People and loans, the “Where it is” filter, encrypted backup, Places and Archive."
+>
+  <main id="contenuto" class="page">
+    <div class="wrap read">
+      <p class="eyebrow">What’s new</p>
+      <h1>What’s new</h1>
+      <p class="lead">
+        Pole² is in <strong>private beta</strong>: it grows calmly, one step at a
+        time. Here’s what’s already available.
+      </p>
+
+      <ul class="log" role="list">
+        {
+          entries.map((e) => (
+            <li class="log__item">
+              <span class="log__tag">{e.tag}</span>
+              <h2>{e.title}</h2>
+              <p>{e.body}</p>
+            </li>
+          ))
+        }
+      </ul>
+
+      <p class="muted">
+        Want to be told when Pole² is ready? Leave your email on the
+        <a href="/en/#lista">waiting list</a>.
+      </p>
+    </div>
+  </main>
+  <Footer />
+</Base>
+
+<style>
+  .page {
+    padding-block: clamp(3rem, 8vw, 6rem);
+  }
+  .log {
+    list-style: none;
+    padding: 0;
+    margin: 2rem 0 0;
+    display: grid;
+    gap: 1.25rem;
+  }
+  .log__item {
+    background: var(--surface);
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+  }
+  .log__tag {
+    display: inline-block;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--petrol);
+    font-weight: 600;
+  }
+  @media (prefers-color-scheme: dark) {
+    .log__tag {
+      color: #7fd6be;
+    }
+  }
+  .log__item h2 {
+    margin: 0.5rem 0 0.4rem;
+    font-size: 1.2rem;
+  }
+  .log__item p {
+    margin: 0;
+    color: var(--muted);
+  }
+  .muted {
+    margin-top: 2rem;
+    color: var(--muted);
+  }
+</style>

@@ -1,0 +1,55 @@
+---
+// The visible IT / EN language selector. Two plain links (the other language's
+// equivalent page), so it works with no JavaScript. When JS is present, a click
+// records the choice in localStorage so the first-visit detector never
+// second-guesses a deliberate selection.
+import { STRINGS, localizedPath, type Locale } from '../i18n';
+
+interface Props {
+  locale: Locale;
+  base: string; // the shared logical path (e.g. '/guida')
+}
+const { locale, base } = Astro.props;
+const other = STRINGS[locale].langOther;
+const otherHref = localizedPath(base, other.code);
+const selfLabel = locale === 'it' ? 'Italiano' : 'English';
+---
+
+<nav class="lang" aria-label={STRINGS[locale].langLabel}>
+  <span class="lang__current" aria-current="true">{selfLabel}</span>
+  <a class="lang__link" href={otherHref} data-lang={other.code}>{other.label}</a>
+</nav>
+
+<style>
+  .lang {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+  }
+  .lang__current {
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .lang__link {
+    color: var(--muted);
+    text-decoration: none;
+  }
+  .lang__link:hover {
+    color: var(--ink);
+    text-decoration: underline;
+  }
+</style>
+
+<script>
+  // Remember a deliberate choice so first-visit detection won't override it.
+  for (const a of document.querySelectorAll<HTMLAnchorElement>('.lang__link')) {
+    a.addEventListener('click', () => {
+      try {
+        localStorage.setItem('pole2-lang', a.dataset.lang || '');
+      } catch {
+        /* private mode / storage blocked — the link still navigates */
+      }
+    });
+  }
+</script>

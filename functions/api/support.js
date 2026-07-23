@@ -1,6 +1,7 @@
 import {
   normalizeEmail,
   isValidCategory,
+  categoryLabel,
   validateMessage,
   sanitizeShort,
   isUuid,
@@ -37,13 +38,17 @@ export async function handleSupport(context) {
   if ((form.get('company') || '').trim() !== '') return ok();
 
   const email = normalizeEmail(form.get('email'));
-  const category = form.get('category');
+  const submittedCategory = form.get('category');
   const message = validateMessage(form.get('message'));
   const appVersion = sanitizeShort(form.get('app_version'), 32);
   const appBuild = sanitizeShort(form.get('app_build'), 16);
 
   if (!email) return fail(400);
-  if (!isValidCategory(category)) return fail(400);
+  if (!isValidCategory(submittedCategory)) return fail(400);
+  // Store the canonical (allowlisted) label, never the raw submitted value.
+  // The form now submits a stable topic key ('question', …); a cached pre-1.0.26
+  // page may still submit the legacy Italian label — both map to the same label.
+  const category = categoryLabel(submittedCategory);
   if (!message) return fail(400);
   if (!isChecked(form.get('privacy'))) return fail(400);
 

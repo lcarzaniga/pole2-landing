@@ -1,0 +1,249 @@
+---
+import Base from '../../layouts/Base.astro';
+import Footer from '../../components/Footer.astro';
+import Wordmark from '../../components/Wordmark.astro';
+---
+
+<Base
+  title="Guide — Pole²"
+  description="How to use Pole² and manage it calmly: Android requirements, local install and updates, encrypted backup, safe restore, secure updates and troubleshooting. Everything stays on your device."
+>
+  <main id="contenuto" class="page">
+    <div class="wrap read">
+      <p class="eyebrow">Guide</p>
+      <h1><Wordmark size="1em" /> — how to use it</h1>
+      <p class="lead">
+        Pole² keeps the things you care about — and what comes with them — close
+        by. Everything stays on your device. Here’s what you can do today.
+      </p>
+
+      <h2>Adding a thing</h2>
+      <p>Tap Kobe, the turtle at the bottom, and choose how to start:</p>
+      <ul>
+        <li><strong>From a photo</strong> — take or pick a photo from your gallery, and the new thing starts with its image already in place.</li>
+        <li><strong>From a name</strong> — start with a title and add the rest, calmly.</li>
+      </ul>
+      <p>All you need is a name: nothing is required, you can fill in the rest whenever you like.</p>
+
+      <h2>Photos and gallery</h2>
+      <p>
+        Every thing can have several photos. The cover is the first image; the
+        others stay in the gallery, reorderable, and you can view them full-screen.
+      </p>
+
+      <h2>Search and “Where it is”</h2>
+      <p>
+        From the main screen you can search by name or category, sort, and filter
+        with <strong>“Where it is”</strong>: everything, no place, inside a Place,
+        or on loan to a person.
+      </p>
+
+      <h2>Places</h2>
+      <p>
+        Places are real containers and can hold one another (Home › Bedroom ›
+        Wardrobe). Each thing can sit in a Place or stay without one. A Place’s
+        filter includes everything in the places it contains too.
+      </p>
+
+      <h2>People: loans, returns and gifts</h2>
+      <p>
+        You can mark a thing as <strong>lent</strong> to a person, then record its
+        <strong>return</strong>. You can also <strong>give</strong> a thing to
+        someone for good and — if one day it comes back — record that it’s
+        <strong>back among your things</strong>. In the <strong>People</strong>
+        section you can see, for each person, what they have on loan, what you’ve
+        given them and their history.
+      </p>
+
+      <h2>Tidy up this place</h2>
+      <p>
+        Inside a Place you can start <strong>“Tidy up this place”</strong>: a calm
+        walk, one thing at a time, to put what’s there back in order.
+      </p>
+
+      <h2>Archive and removed things</h2>
+      <p>
+        Things that leave everyday use stay readable in the
+        <strong>Archive</strong>: those put aside and those removed are kept
+        separate. Nothing is deleted for good without a deliberate action from you.
+      </p>
+
+      <h2>Encrypted backup and restore</h2>
+      <p>
+        You can create an <strong>encrypted backup</strong> of your data and
+        photos, choosing where to save it. A <strong>restore</strong> replaces the
+        current data with the backup’s, keeping a safety copy throughout the
+        operation. Only you know the backup password: without it, the backup can’t
+        be read.
+      </p>
+
+      <h2>Everything on your device</h2>
+      <p>
+        Pole² works locally: no account, no cloud, no ads. Your data lives on your
+        phone, and any sharing is up to you.
+      </p>
+
+      <hr class="rule" />
+
+      <p class="eyebrow">Install and maintenance</p>
+      <h2 id="requisiti">Requirements</h2>
+      <ul>
+        <li>Android <strong>7.0</strong> or later.</li>
+        <li>A <strong>universal Android APK</strong> (a single file, for every compatible device).</li>
+        <li>
+          Pole² is distributed as a <strong>beta</strong> outside the Google Play
+          Store: install it from the <strong>official GitHub Releases</strong> or
+          via Pole²’s in-app update.
+        </li>
+      </ul>
+
+      <h2 id="installazione">Install and update</h2>
+      <ul>
+        <li>
+          Download the file <strong>only</strong> from the
+          <a href="https://github.com/lcarzaniga/pole2-app/releases" rel="noopener">official Pole² GitHub Release</a>
+          or from the <strong>official in-app update</strong>. Don’t download it
+          from other sources.
+        </li>
+        <li>
+          When you open the APK, Android may ask you to <strong>allow
+          installation</strong> from the app that opened it (your browser or file
+          manager).
+        </li>
+        <li>
+          That permission concerns <strong>that source app</strong>, not Pole²:
+          you can <strong>turn it off again</strong> after installing.
+        </li>
+        <li>
+          An <strong>in-place</strong> update, signed with the same Pole² key,
+          <strong>keeps your data and photos</strong>: there’s no need to
+          reinstall from scratch.
+        </li>
+        <li>
+          <strong>Don’t uninstall</strong> Pole² before updating: you’d lose your
+          local data. The update installs over the existing version.
+        </li>
+      </ul>
+
+      <h2 id="backup">Backup</h2>
+      <ul>
+        <li>The backup is <strong>manual and local</strong>: you create it, when you want.</li>
+        <li>It contains Pole²’s <strong>database</strong> and the <strong>linked photos</strong>.</li>
+        <li><strong>Password protection</strong> is recommended.</li>
+        <li>
+          A forgotten backup password <strong>can’t be recovered</strong>: without
+          it, that backup can’t be read. Keep it safe.
+        </li>
+        <li>Pole² has <strong>no cloud copies and no account</strong>: no one can reset it for you.</li>
+        <li>You choose <strong>where to save the file</strong>.</li>
+      </ul>
+
+      <h2 id="ripristino">Restore</h2>
+      <ul>
+        <li>
+          A restore <strong>replaces</strong> Pole²’s current contents with the
+          backup’s: it <strong>doesn’t merge them</strong>.
+        </li>
+        <li>
+          Pole² <strong>verifies and prepares</strong> the backup before touching
+          your active data.
+        </li>
+        <li>
+          It keeps an <strong>emergency safety copy</strong> and, if verification
+          fails, <strong>rolls back automatically</strong> to the previous data.
+        </li>
+        <li>
+          To finish, the app <strong>closes and needs to be reopened</strong>.
+        </li>
+        <li>
+          Before restoring, it’s worth creating a <strong>new backup of your
+          current data</strong>.
+        </li>
+      </ul>
+
+      <h2 id="aggiornamenti-sicuri">Safe updates</h2>
+      <ul>
+        <li>Some versions may <strong>recommend a backup</strong> before downloading.</li>
+        <li>You can still <strong>continue without a backup</strong> or <strong>postpone</strong>.</li>
+        <li>Updates <strong>never install by themselves</strong>.</li>
+        <li>Pole² <strong>blocks an update while a restore is in progress</strong>.</li>
+        <li>Downloaded APKs are <strong>verified with SHA-256</strong> before installing.</li>
+      </ul>
+
+      <h2 id="problemi">If something goes wrong</h2>
+      <ul>
+        <li>
+          <strong>You’re offline or no update is available:</strong> keep using the
+          app and try again later. Nothing gets stuck.
+        </li>
+        <li>
+          <strong>The install is blocked:</strong> check the
+          “<strong>Install unknown apps</strong>” permission for the app that
+          opened the APK.
+        </li>
+        <li>
+          <strong>The restore fails:</strong> Pole² <strong>restores your previous
+          local data by itself</strong>.
+        </li>
+        <li>
+          Need help? Write to us from the <a href="/en/supporto">Support</a> page.
+        </li>
+      </ul>
+      <p class="warn">
+        For your privacy, <strong>don’t send</strong> backups, databases, photos,
+        passwords or sensitive contents of the things you keep in Pole². To help
+        you, a description of the problem is enough.
+      </p>
+
+      <h2 id="fonti-ufficiali">Official sources</h2>
+      <ul>
+        <li><a href="https://github.com/lcarzaniga/pole2-app/releases" rel="noopener">Official GitHub Releases</a> — this is where you download the APK.</li>
+        <li><a href="/en/privacy">Privacy</a> — what stays on the device and what the site collects.</li>
+        <li><a href="/en/supporto">Support</a> — write to us if something isn’t right.</li>
+        <li><a href="/en/novita">What’s new</a> — what has changed.</li>
+      </ul>
+      <p class="muted">
+        Pole² isn’t on the Play Store: there’s no official Play Store link. The
+        only download channel is the official GitHub Release.
+      </p>
+    </div>
+  </main>
+  <Footer />
+</Base>
+
+<style>
+  .page {
+    padding-block: clamp(3rem, 8vw, 6rem);
+  }
+  .read h1 {
+    margin: 0.3rem 0 0.6rem;
+  }
+  .read h2 {
+    margin-top: 2.2rem;
+  }
+  .read ul {
+    padding-left: 1.2rem;
+  }
+  .read li {
+    margin: 0.3rem 0;
+  }
+  .muted {
+    color: var(--muted);
+  }
+  .rule {
+    margin: 2.6rem 0 0.4rem;
+    border: 0;
+    border-top: 1px solid var(--hairline);
+  }
+  .read .eyebrow {
+    margin-top: 1.4rem;
+  }
+  .warn {
+    margin-top: 1rem;
+    padding: 0.9rem 1.1rem;
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    color: var(--ink);
+  }
+</style>

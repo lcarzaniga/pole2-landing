@@ -15,18 +15,58 @@ export function normalizeEmail(raw) {
   return e;
 }
 
-/** The fixed support categories. The email subject is derived only from this
- *  allowlist, so it can never carry user-controlled header content. */
-export const CATEGORIES = Object.freeze([
-  'Domanda',
-  'Problema tecnico',
-  'Suggerimento',
-  'Privacy e dati',
-  'Altro',
+/** Stable support-topic keys (the localized site submits these, not a
+ *  translated label). The stored category and the email subject are derived
+ *  ONLY from this allowlist, so they can never carry user-controlled header
+ *  content. */
+export const TOPIC_KEYS = Object.freeze([
+  'question',
+  'technical',
+  'suggestion',
+  'privacy',
+  'other',
 ]);
 
+/** Canonical (Italian) label stored in D1 and used for the notification
+ *  subject — one stable value per key, independent of the sender's language. */
+export const TOPIC_LABEL = Object.freeze({
+  question: 'Domanda',
+  technical: 'Problema tecnico',
+  suggestion: 'Suggerimento',
+  privacy: 'Privacy e dati',
+  other: 'Altro',
+});
+
+/** Legacy Italian labels a cached pre-1.0.26 page might still POST. Mapped back
+ *  to their stable key so older clients keep working during the rollout. */
+const LEGACY_LABEL_TO_KEY = Object.freeze({
+  Domanda: 'question',
+  'Problema tecnico': 'technical',
+  Suggerimento: 'suggestion',
+  'Privacy e dati': 'privacy',
+  Altro: 'other',
+});
+
+/** The fixed categories (canonical labels) — kept for compatibility with any
+ *  caller importing CATEGORIES; derived from the allowlist above. */
+export const CATEGORIES = Object.freeze(TOPIC_KEYS.map((k) => TOPIC_LABEL[k]));
+
+/** Normalize a submitted category to its stable key, or null if unknown.
+ *  Accepts a stable key (the localized site) or a legacy Italian label. */
+export function topicKey(c) {
+  if (typeof c !== 'string') return null;
+  if (TOPIC_KEYS.includes(c)) return c;
+  return LEGACY_LABEL_TO_KEY[c] || null;
+}
+
 export function isValidCategory(c) {
-  return typeof c === 'string' && CATEGORIES.includes(c);
+  return topicKey(c) !== null;
+}
+
+/** The canonical label to store for a submitted category (null if invalid). */
+export function categoryLabel(c) {
+  const k = topicKey(c);
+  return k ? TOPIC_LABEL[k] : null;
 }
 
 /** Support message: trimmed, 10–4000 chars. Returns the trimmed message or null. */

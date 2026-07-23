@@ -4,13 +4,42 @@
 // ONLY after a durable 2xx. A client-generated submission id makes retries
 // idempotent. app version/build are prefilled from ?v= and ?b=.
 import Turnstile from './Turnstile.astro';
+import {
+  STRINGS,
+  SUPPORT_TOPICS,
+  SUPPORT_TOPIC_LABELS,
+  localeFromPath,
+  localizedPath,
+} from '../i18n';
+
+const locale = localeFromPath(Astro.url.pathname);
+const sp = STRINGS[locale].support;
+const topics = SUPPORT_TOPIC_LABELS[locale];
+const privacyHref = localizedPath('/privacy', locale);
+const hint =
+  locale === 'it'
+    ? 'Non inviare backup, fotografie o informazioni personali sulle cose che conservi in Pole².'
+    : 'Don’t send backups, photos or personal information about the things you keep in Pole².';
+const consentTail =
+  locale === 'it'
+    ? ' e acconsento al trattamento dei dati per rispondere alla mia richiesta.'
+    : ' and consent to my data being processed to answer my request.';
 ---
 
-<form class="support-form" action="/api/support" method="post" novalidate>
+<form
+  class="support-form"
+  action="/api/support"
+  method="post"
+  novalidate
+  data-check-email={sp.checkEmail}
+  data-too-short={sp.tooShort}
+  data-success={sp.success}
+  data-fail={sp.fail}
+>
   <input type="hidden" name="submission_id" value="" />
 
   <div class="field">
-    <label class="field__label" for="sp-email">La tua email (per risponderti)</label>
+    <label class="field__label" for="sp-email">{sp.emailLabel}</label>
     <input
       id="sp-email"
       class="field__input"
@@ -18,24 +47,26 @@ import Turnstile from './Turnstile.astro';
       name="email"
       inputmode="email"
       autocomplete="email"
-      placeholder="tu@esempio.it"
+      placeholder={STRINGS[locale].waitlist.placeholder}
       required
     />
   </div>
 
   <div class="field">
-    <label class="field__label" for="sp-category">Argomento</label>
+    <label class="field__label" for="sp-category">{sp.topicLabel}</label>
+    <!-- The VALUE is a stable topic key; the label is localized. The server
+         validates the key, never the translated text. -->
     <select id="sp-category" class="field__input" name="category" required>
-      <option value="Domanda">Domanda</option>
-      <option value="Problema tecnico">Problema tecnico</option>
-      <option value="Suggerimento">Suggerimento</option>
-      <option value="Privacy e dati">Privacy e dati</option>
-      <option value="Altro">Altro</option>
+      {
+        SUPPORT_TOPICS.map((key) => (
+          <option value={key}>{topics[key]}</option>
+        ))
+      }
     </select>
   </div>
 
   <div class="field">
-    <label class="field__label" for="sp-message">Messaggio</label>
+    <label class="field__label" for="sp-message">{sp.messageLabel}</label>
     <textarea
       id="sp-message"
       class="field__input field__textarea"
@@ -44,28 +75,25 @@ import Turnstile from './Turnstile.astro';
       minlength="10"
       maxlength="4000"
       required
-      placeholder="Raccontaci con calma cosa succede."
+      placeholder={sp.messagePlaceholder}
     ></textarea>
-    <p class="field__hint">
-      Non inviare backup, fotografie o informazioni personali sulle cose che
-      conservi in Pole².
-    </p>
+    <p class="field__hint">{hint}</p>
   </div>
 
   <div class="field field--inline">
     <div>
-      <label class="field__label" for="sp-version">Versione app (facoltativa)</label>
+      <label class="field__label" for="sp-version">{sp.versionLabel}</label>
       <input id="sp-version" class="field__input" type="text" name="app_version" maxlength="32" autocomplete="off" />
     </div>
     <div>
-      <label class="field__label" for="sp-build">Build (facoltativa)</label>
+      <label class="field__label" for="sp-build">{sp.buildLabel}</label>
       <input id="sp-build" class="field__input" type="text" name="app_build" maxlength="16" autocomplete="off" />
     </div>
   </div>
 
   <!-- Honeypot -->
   <div class="support-form__hp" aria-hidden="true">
-    <label>Lascia vuoto questo campo
+    <label>{sp.hpLabel}
       <input type="text" name="company" tabindex="-1" autocomplete="off" />
     </label>
   </div>
@@ -73,15 +101,14 @@ import Turnstile from './Turnstile.astro';
   <label class="support-form__consent">
     <input type="checkbox" name="privacy" value="on" required />
     <span>
-      Ho letto l’<a href="/privacy">informativa privacy</a> e acconsento al
-      trattamento dei dati per rispondere alla mia richiesta.
+      {sp.consent} <a href={privacyHref}>{sp.privacyLink}</a>{consentTail}
     </span>
   </label>
 
   <Turnstile />
 
   <div class="support-form__actions">
-    <button class="btn btn--primary" type="submit">Invia</button>
+    <button class="btn btn--primary" type="submit">{sp.submit}</button>
   </div>
 
   <p id="sp-status" class="support-form__status" role="status" aria-live="polite"></p>
@@ -180,6 +207,7 @@ import Turnstile from './Turnstile.astro';
     const idField = form.querySelector<HTMLInputElement>('input[name="submission_id"]')!;
     const button = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
     const status = form.querySelector<HTMLParagraphElement>('#sp-status')!;
+    const t = (k: string, fallback: string) => form.dataset[k] || fallback;
     let pending = false;
 
     const say = (m: string) => {
@@ -210,25 +238,25 @@ import Turnstile from './Turnstile.astro';
       message.setAttribute('aria-invalid', 'false');
       if (!email.value || !email.checkValidity()) {
         email.setAttribute('aria-invalid', 'true');
-        say('Controlla l’indirizzo email, con calma.');
+        say(t('checkEmail', 'Check the email address and try again.'));
         email.focus();
         return;
       }
       if (message.value.trim().length < 10) {
         message.setAttribute('aria-invalid', 'true');
-        say('Scrivi qualche parola in più, così possiamo aiutarti.');
+        say(t('tooShort', 'Write a few more words so we can help.'));
         message.focus();
         return;
       }
       if (!consent.checked) {
-        say('Serve il tuo consenso per gestire la richiesta.');
+        say(t('needConsent', 'We need your consent to handle the request.'));
         consent.focus();
         return;
       }
 
       pending = true;
       button.disabled = true;
-      say('Un momento…');
+      say('…');
       try {
         const res = await fetch('/api/support', {
           method: 'POST',
@@ -237,11 +265,11 @@ import Turnstile from './Turnstile.astro';
         });
         if (!res.ok) throw new Error(String(res.status));
         form.classList.add('is-done');
-        say('Grazie. Abbiamo ricevuto il tuo messaggio: ti risponderemo via email.');
+        say(t('success', 'Thank you. We’ve received your message and will reply by email.'));
         status.focus?.();
       } catch {
         // Keep everything the user typed; allow a retry with the same id.
-        say('Non è andato perso nulla. Riprova quando vuoi.');
+        say(t('fail', 'Nothing was lost. Try again whenever you like.'));
         button.disabled = false;
       } finally {
         pending = false;

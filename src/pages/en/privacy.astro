@@ -1,0 +1,117 @@
+---
+import Base from '../../layouts/Base.astro';
+import Footer from '../../components/Footer.astro';
+---
+
+<Base
+  title="Privacy — Pole²"
+  description="Pole² privacy notice: the app’s data stays on your device; the site collects only waiting-list emails and support messages, with Cloudflare and Resend as providers."
+>
+  <main id="contenuto" class="page">
+    <div class="wrap read">
+      <p class="eyebrow">Privacy</p>
+      <h1>Privacy notice</h1>
+      <p class="lead">
+        In plain words: the app works on your device; the site collects only what
+        you leave us voluntarily (waiting-list emails and support messages).
+      </p>
+
+      <h2>The Pole² app</h2>
+      <ul>
+        <li>Your data (things, photos, notes, loans) stays <strong>locally on your device</strong>.</li>
+        <li>There is no Pole² account, no cloud, no analytics and no tracking.</li>
+        <li>The backup is manual and <strong>you choose where it goes</strong>; it’s encrypted with a password only you know.</li>
+        <li>If one day you want to share something, that will be your decision.</li>
+      </ul>
+
+      <h2>The pole2.app site — waiting list</h2>
+      <ul>
+        <li><strong>What we collect:</strong> the email address you enter and the date.</li>
+        <li><strong>Why:</strong> to let you know, once only, when Pole² is ready.</li>
+        <li><strong>Legal basis:</strong> your consent, given by ticking the box.</li>
+        <li><strong>Retention:</strong> until launch and in any case no longer than 12 months, after which the address is deleted.</li>
+      </ul>
+
+      <h2>The pole2.app site — support</h2>
+      <ul>
+        <li><strong>What we collect:</strong> the email to reply to you, the topic, the message you write and, if you provide it, the app version.</li>
+        <li><strong>Why:</strong> to read and answer your request.</li>
+        <li><strong>Legal basis:</strong> your consent and our legitimate interest in providing assistance.</li>
+        <li><strong>Retention:</strong> no longer than 24 months, after which the message is deleted.</li>
+        <li>We ask you <strong>not to send</strong> backups, photos or personal information about the things you keep in Pole².</li>
+      </ul>
+
+      <h2>Providers (data processors)</h2>
+      <ul>
+        <li><strong>Cloudflare</strong> — hosts the site and the forms database (waiting list and support).</li>
+        <li><strong>Resend</strong> — sends us the notification of support messages.</li>
+        <li><strong>Cloudflare Turnstile</strong> — protects the forms from automated submissions by processing technical signals from the device and the connection. It may use identifiers or local storage strictly necessary for security, not used by Pole² for advertising, profiling or visit analytics.</li>
+      </ul>
+      <p>
+        To prevent abuse we keep a value derived from the IP address through a
+        one-way function: <strong>we do not keep the IP address in clear text</strong>.
+      </p>
+
+      <h2>Cookies and technical tools</h2>
+      <p>
+        Pole² does not use advertising, profiling or visit-analytics cookies. The
+        site and Cloudflare may use cookies or technical tools strictly necessary
+        to deliver and protect the service, including the Turnstile anti-spam
+        check. These tools do not require prior consent. You can manage or delete
+        cookies and site data from your browser settings; some form security
+        features may not work if they are blocked.
+      </p>
+
+      <h2>Ko-fi</h2>
+      <p>
+        Voluntary contributions are handled by Ko-fi and its payment provider.
+        <strong>Pole² never receives your card details.</strong>
+      </p>
+
+      <h2>Your rights</h2>
+      <p>
+        You can request access to, correction of, or deletion of the data you have
+        left us by writing from the <a href="/en/supporto">Support</a> page
+        (topic “Privacy & data”).
+      </p>
+
+      <h2>Data controller</h2>
+      <p>
+        The <strong>Pole²</strong> project is the data controller for the site’s
+        data. Contact us through <a href="/en/supporto">Support</a> or at
+        <strong>support@pole2.app</strong>.
+      </p>
+
+      <p class="fine">
+        This is the project’s privacy notice, written in plain language. It is not
+        a certification nor an independent legal review; we will update it
+        transparently if anything changes.
+      </p>
+    </div>
+  </main>
+  <Footer />
+</Base>
+
+<style>
+  .page {
+    padding-block: clamp(3rem, 8vw, 6rem);
+  }
+  .read h1 {
+    margin: 0.3rem 0 0.6rem;
+  }
+  .read h2 {
+    margin-top: 2.2rem;
+  }
+  .read ul {
+    padding-left: 1.2rem;
+  }
+  .read li {
+    margin: 0.35rem 0;
+  }
+  .fine {
+    margin-top: 2.5rem;
+    font-size: 0.9rem;
+    color: var(--muted);
+    font-style: italic;
+  }
+</style>

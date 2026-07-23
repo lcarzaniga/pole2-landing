@@ -13,9 +13,14 @@ export default defineConfig({
   integrations: [sitemap()],
   compressHTML: true,
   build: { inlineStylesheets: 'auto' },
-  // Italian only — the app is Italian-only for now (see the Flutter project).
+  // Bilingual (Pole² 1.0.26): Italian is canonical at the root; English lives
+  // under /en/ (prefixDefaultLocale:false keeps every existing Italian URL).
   i18n: {
     defaultLocale: 'it',
-    locales: ['it'],
+    locales: ['it', 'en'],
+    routing: {
+      prefixDefaultLocale: false,
+      redirectToDefaultLocale: false,
+    },
   },
 });

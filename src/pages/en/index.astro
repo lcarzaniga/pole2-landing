@@ -1,0 +1,316 @@
+---
+import Base from '../../layouts/Base.astro';
+import Wordmark from '../../components/Wordmark.astro';
+import Kobe from '../../components/Kobe.astro';
+import HexTexture from '../../components/HexTexture.astro';
+import WaitlistForm from '../../components/WaitlistForm.astro';
+import Support from '../../components/Support.astro';
+import Footer from '../../components/Footer.astro';
+
+const steps = [
+  { title: 'Keep', body: 'You entrust Pole² with something you care about. In a moment it’s safe.' },
+  { title: 'Breathe', body: 'You don’t have to hold it all in your head anymore. It remembers for you.' },
+  { title: 'Find it again', body: 'When you need it, it’ll be there. In its place, just as you left it.' },
+];
+
+const privacy = ['No cloud.', 'No account.', 'No subscription.'];
+---
+
+<Base>
+  <!-- ============================= HERO ============================= -->
+  <header class="hero">
+    <HexTexture color="#f6f1e7" opacity={0.05} cell={58} />
+    <div class="wrap hero__grid">
+      <div class="hero__text">
+        <Wordmark as="h1" size="clamp(3.2rem, 2rem + 9vw, 6rem)" class="hero__mark" />
+        <p class="hero__tagline">
+          Keep what matters.<br />Mind what you keep.
+        </p>
+        <p class="hero__sentence">
+          The peace of knowing where the things you care about are.
+        </p>
+        <div class="hero__cta">
+          <a class="btn btn--onPetrol" href="#lista">Save me a spot</a>
+          <p class="hero__reassure">Everything stays on your device.</p>
+        </div>
+      </div>
+      <div class="hero__turtle">
+        <Kobe size="min(72vw, 320px)" halo interactive />
+      </div>
+    </div>
+  </header>
+
+  <main id="contenuto">
+    <!-- ========================== NARRATIVE ========================== -->
+    <section class="section narrative" aria-labelledby="story-h">
+      <div class="wrap read">
+        <p class="anxiety reveal" id="story-h">“I know I have it.<br />But where?”</p>
+        <div class="narrative__body reveal">
+          <p>
+            Things don’t become a problem when we lose them. They become one
+            months later, when we need what came with them — and can’t find it.
+          </p>
+          <p class="narrative__refrain">
+            The receipt. The warranty. The manual.<br />
+            That note we promised ourselves we’d remember.
+          </p>
+          <p>Pole² keeps it all close, so tomorrow is never harder than today.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================= HOW IT FEELS ========================= -->
+    <section class="section section--alt" aria-labelledby="how-h">
+      <div class="wrap">
+        <div class="read reveal">
+          <p class="eyebrow">How it feels</p>
+          <h2 id="how-h">Entrust it. And let go.</h2>
+        </div>
+        <ul class="steps" role="list">
+          {
+            steps.map((s) => (
+              <li class="steps__item reveal">
+                <span class="steps__mark" aria-hidden="true" />
+                <h3>{s.title}</h3>
+                <p>{s.body}</p>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============================ PRIVACY ============================ -->
+    <section class="section privacy" aria-labelledby="privacy-h">
+      <HexTexture color="#f6f1e7" opacity={0.045} cell={58} />
+      <div class="wrap read reveal privacy__inner">
+        <p class="eyebrow eyebrow--onPetrol">Privacy</p>
+        <h2 id="privacy-h">Your things stay yours.</h2>
+        <p class="privacy__lead">Pole² works without asking anything of you.</p>
+        <ul class="privacy__list">
+          {privacy.map((p) => <li>{p}</li>)}
+        </ul>
+        <p class="privacy__closing">
+          Your data lives on your device. If one day you want to share it, that’s
+          your call — always.
+        </p>
+      </div>
+    </section>
+
+    <!-- ========================= BRAND STORY ========================= -->
+    <section class="section" aria-labelledby="name-h">
+      <div class="wrap read reveal">
+        <p class="eyebrow">The name</p>
+        <h2 id="name-h">Pole pole.</h2>
+        <p class="lead">
+          In Swahili <em>“pole pole”</em> means slowly, slowly: calmly, without
+          rushing.
+        </p>
+        <p>
+          We heard it in Zanzibar. It became how we wanted things to feel in
+          here. The small <strong>“²”</strong> in the name hides a little game:
+          <Wordmark size="1.05em" /> echoes “pole pole”. You don’t have to notice
+          it right away — it’s simply there to discover.
+        </p>
+      </div>
+    </section>
+
+    <!-- ========================= WAITING LIST ========================= -->
+    <section class="section section--alt" id="lista" aria-labelledby="wl-h">
+      <div class="wrap read reveal">
+        <p class="eyebrow">You’re in too</p>
+        <h2 id="wl-h">We’ll save you a spot.</h2>
+        <p class="lead">
+          Leave your email. We’ll write just once, when Pole² is ready. No rush.
+        </p>
+        <WaitlistForm />
+      </div>
+    </section>
+
+    <!-- =========================== SUPPORT ============================ -->
+    <Support />
+  </main>
+
+  <!-- ============================= FOOTER ============================= -->
+  <Footer />
+</Base>
+
+<style>
+  /* -------------------------------- HERO -------------------------------- */
+  .hero {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background:
+      radial-gradient(120% 90% at 20% 10%, #3a7c6d 0%, var(--petrol) 45%, var(--petrol-deep) 100%);
+    color: var(--on-petrol);
+    min-height: min(92svh, 920px);
+    display: flex;
+    align-items: center;
+    padding-block: 4rem;
+  }
+  .hero__grid {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: center;
+  }
+  @media (min-width: 56rem) {
+    .hero__grid {
+      grid-template-columns: 1.15fr 0.85fr;
+    }
+  }
+  .hero__mark {
+    color: var(--on-petrol);
+    margin: 0 0 1.25rem;
+  }
+  .hero__tagline {
+    font-size: clamp(1.35rem, 1.1rem + 1.2vw, 1.9rem);
+    line-height: 1.25;
+    font-weight: 500;
+    margin: 0 0 1.25rem;
+    color: var(--on-petrol);
+    text-wrap: balance;
+  }
+  .hero__sentence {
+    font-size: clamp(1.05rem, 1rem + 0.5vw, 1.3rem);
+    color: var(--on-petrol-muted);
+    max-width: 34rem;
+    margin: 0 0 2rem;
+  }
+  .hero__cta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: flex-start;
+  }
+  .hero__reassure {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--on-petrol-muted);
+  }
+  .hero__turtle {
+    display: flex;
+    justify-content: center;
+  }
+
+  /* ----------------------------- NARRATIVE ------------------------------ */
+  .narrative {
+    padding-block: clamp(5rem, 11vw, 9rem);
+  }
+  .anxiety {
+    font-family: 'Work Sans', 'Inter', sans-serif;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    font-size: clamp(2.4rem, 1.6rem + 4.5vw, 4.25rem);
+    color: var(--petrol);
+    margin: 0 0 2rem;
+    text-wrap: balance;
+  }
+  @media (prefers-color-scheme: dark) {
+    .anxiety {
+      color: #7fd6be;
+    }
+  }
+  .narrative__body p {
+    font-size: clamp(1.15rem, 1rem + 0.7vw, 1.45rem);
+    line-height: 1.55;
+    max-width: 34rem;
+  }
+  .narrative__refrain {
+    color: var(--muted);
+  }
+
+  /* ------------------------------- STEPS -------------------------------- */
+  .steps {
+    list-style: none;
+    padding: 0;
+    margin: 2.5rem 0 0;
+    display: grid;
+    gap: 1.25rem;
+  }
+  @media (min-width: 48rem) {
+    .steps {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+  }
+  .steps__item {
+    background: var(--surface);
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-lg);
+    padding: 1.75rem;
+  }
+  .steps__mark {
+    display: block;
+    width: 0.85rem;
+    height: 0.95rem;
+    background: var(--gold);
+    clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%);
+  }
+  .steps__item h3 {
+    margin: 0.85rem 0 0.4rem;
+  }
+  .steps__item p {
+    margin: 0;
+    color: var(--muted);
+  }
+
+  /* ------------------------------ PRIVACY ------------------------------- */
+  .privacy {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background:
+      radial-gradient(120% 100% at 80% 0%, #2f6e5c 0%, var(--petrol) 55%, var(--petrol-deep) 100%);
+    color: var(--on-petrol);
+  }
+  .privacy__inner {
+    position: relative;
+    z-index: 1;
+  }
+  .eyebrow--onPetrol {
+    color: var(--gold);
+  }
+  .privacy h2 {
+    color: var(--on-petrol);
+  }
+  .privacy__lead {
+    font-size: clamp(1.15rem, 1rem + 0.7vw, 1.4rem);
+    color: var(--on-petrol);
+    margin: 0 0 0.5rem;
+  }
+  .privacy__list {
+    list-style: none;
+    padding: 0;
+    margin: 1.5rem 0;
+    display: grid;
+    gap: 0.9rem;
+  }
+  .privacy__list li {
+    position: relative;
+    padding-left: 1.9rem;
+    font-size: 1.1rem;
+  }
+  .privacy__list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.55em;
+    width: 0.7rem;
+    height: 0.7rem;
+    background: var(--gold);
+    clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%);
+  }
+  .privacy__closing {
+    margin-top: 1.75rem;
+    color: var(--on-petrol-muted);
+    font-style: italic;
+  }
+
+  em {
+    font-style: italic;
+  }
+</style>
