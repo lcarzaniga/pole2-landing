@@ -1,9 +1,9 @@
 {
-  "versionName": "1.0.23",
-  "versionCode": 2028,
-  "apkUrl": "https://github.com/lcarzaniga/pole2-app/releases/download/v1.0.23-vc2028/pole2-android-1.0.23-vc2028.apk",
-  "sha256": "99d1fb96c61810cac0fe8040cd3f1f29d7d9d537416f170a70ef2ff1a7943aa1",
-  "notes": ["Nuova icona dell’app con Kobe, più riconoscibile e coerente con l’identità di Pole²."],
-  "backupRecommended": false,
+  "versionName": "1.0.24",
+  "versionCode": 2029,
+  "apkUrl": "https://github.com/lcarzaniga/pole2-app/releases/download/v1.0.24-vc2029/pole2-android-1.0.24-vc2029.apk",
+  "sha256": "f66c365f6c632e26cdd735831904f3ac60cd46cdc9a4c391412bdaae631e9e10",
+  "notes": ["Note e registrazioni possono ora includere categorie, date, scadenze e promemoria.", "Puoi allegare ricevute, garanzie, manuali e altri documenti.", "Migliorata la gestione sicura dei file, del backup e del ripristino."],
+  "backupRecommended": true,
   "mandatory": false
 }
