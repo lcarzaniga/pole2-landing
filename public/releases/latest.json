@@ -1,9 +1,9 @@
 {
-  "versionName": "1.0.24",
-  "versionCode": 2029,
-  "apkUrl": "https://github.com/lcarzaniga/pole2-app/releases/download/v1.0.24-vc2029/pole2-android-1.0.24-vc2029.apk",
-  "sha256": "f66c365f6c632e26cdd735831904f3ac60cd46cdc9a4c391412bdaae631e9e10",
-  "notes": ["Note e registrazioni possono ora includere categorie, date, scadenze e promemoria.", "Puoi allegare ricevute, garanzie, manuali e altri documenti.", "Migliorata la gestione sicura dei file, del backup e del ripristino."],
-  "backupRecommended": true,
+  "versionName": "1.0.25",
+  "versionCode": 2030,
+  "apkUrl": "https://github.com/lcarzaniga/pole2-app/releases/download/v1.0.25-vc2030/pole2-android-1.0.25-vc2030.apk",
+  "sha256": "07374d1ffaa8f5e24bd45ebf0c127b9102b71716437f6e7dbba14eaba41d585d",
+  "notes": ["Puoi allegare foto, scontrini e documenti alle note e alle registrazioni.", "Scatta una foto, scegline una dalla galleria oppure seleziona un documento.", "Foto e documenti possono essere conservati insieme nella stessa registrazione."],
+  "backupRecommended": false,
   "mandatory": false
 }
