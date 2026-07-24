@@ -1,11 +1,11 @@
 {
-  "versionName": "1.0.25",
-  "versionCode": 2030,
-  "apkUrl": "https://github.com/lcarzaniga/pole2-app/releases/download/v1.0.25-vc2030/pole2-android-1.0.25-vc2030.apk",
-  "sha256": "07374d1ffaa8f5e24bd45ebf0c127b9102b71716437f6e7dbba14eaba41d585d",
-  "notes": ["Puoi allegare foto, scontrini e documenti alle note e alle registrazioni.", "Scatta una foto, scegline una dalla galleria oppure seleziona un documento.", "Foto e documenti possono essere conservati insieme nella stessa registrazione."],
-  "notes_it": ["Puoi allegare foto, scontrini e documenti alle note e alle registrazioni.", "Scatta una foto, scegline una dalla galleria oppure seleziona un documento.", "Foto e documenti possono essere conservati insieme nella stessa registrazione."],
-  "notes_en": ["You can attach photos, receipts and documents to your notes and records.", "Take a photo, pick one from your gallery, or choose a document.", "Photos and documents can be kept together in the same record."],
+  "versionName": "1.0.26",
+  "versionCode": 2031,
+  "apkUrl": "https://github.com/lcarzaniga/pole2-app/releases/download/v1.0.26-vc2031/pole2-android-1.0.26-vc2031.apk",
+  "sha256": "595f71bd29822a2cf24f56204c2953fd0fb43d063d8e6482a22736c511e2b5bb",
+  "notes": ["Pole² ora parla anche inglese: segue la lingua del dispositivo o la scegli tu dalle Impostazioni.", "Nuove Impostazioni: lingua, backup e spazio, controllo aggiornamenti, informazioni e supporto.", "Testi rivisti in tutta l’app, miglioramenti e correzioni di bug."],
+  "notes_it": ["Pole² ora parla anche inglese: segue la lingua del dispositivo o la scegli tu dalle Impostazioni.", "Nuove Impostazioni: lingua, backup e spazio, controllo aggiornamenti, informazioni e supporto.", "Testi rivisti in tutta l’app, miglioramenti e correzioni di bug."],
+  "notes_en": ["Pole² now speaks English: it follows your device language, or you choose it in Settings.", "New Settings: language, backup & storage, update check, about & support.", "Refined text throughout the app, improvements and bug fixes."],
   "backupRecommended": false,
   "mandatory": false
 }
